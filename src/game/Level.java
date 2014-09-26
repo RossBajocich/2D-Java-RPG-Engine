@@ -4,6 +4,7 @@ import items.Container;
 import items.Item;
 
 import java.awt.image.BufferedImage;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -11,7 +12,6 @@ import java.util.TreeMap;
 import utilities.Console;
 import utilities.Console.in;
 import utilities.Images;
-import utilities.Images.EXT;
 import characters.NPC;
 import characters.Player;
 import elements.Collidable;
@@ -25,13 +25,17 @@ public class Level {
 	int width, height;
 	LinkedList<Member> moved = new LinkedList<Member>();
 
-	public static final int DECORATION = 0;
-	public static final int ITEM = 1;
-	public static final int MAIN = 2;
+	public enum RenderLayer {
+		DECORATION(0), ITEM(1), MAIN(2);
+		RenderLayer(int x) {
+
+		}
+	}
 
 	String bg;
 
-	TreeMap<Integer, LinkedList<Renderable>> renders = new TreeMap<Integer, LinkedList<Renderable>>();
+	EnumMap<RenderLayer, LinkedList<Renderable>> renders = new EnumMap<RenderLayer, LinkedList<Renderable>>(
+			RenderLayer.class);
 	LinkedList<Player> players = new LinkedList<Player>();
 	LinkedList<Member> elements = new LinkedList<Member>();
 	private Player mainPlayer;
@@ -94,11 +98,11 @@ public class Level {
 		Renderable a = (Renderable) e;
 
 		if (e instanceof Decoration) {
-			addRender(DECORATION, a);
+			addRender(RenderLayer.DECORATION, a);
 		} else if (e instanceof Item) {
-			addRender(ITEM, a);
+			addRender(RenderLayer.ITEM, a);
 		} else if (e instanceof Prop || e instanceof Player) {
-			addRender(MAIN, a);
+			addRender(RenderLayer.MAIN, a);
 			if (e instanceof Player) {
 				if (!players.contains((Player) e)) {
 					Console.log("player " + e.getName(), in.INFO);
@@ -106,19 +110,19 @@ public class Level {
 				}
 			}
 		} else if (e instanceof Decoration) {
-			addRender(DECORATION, a);
-		}else if (e instanceof Container){
-			addRender(DECORATION, a);
+			addRender(RenderLayer.DECORATION, a);
+		} else if (e instanceof Container) {
+			addRender(RenderLayer.DECORATION, a);
 		} else {
 			Console.log("Not a valid object @ level -> addMember()", in.ERROR);
 		}
 	}
 
-	private void addRender(int i, Renderable r) {
-		LinkedList<Renderable> currentValue = renders.get(i);
+	private void addRender(RenderLayer rl, Renderable r) {
+		LinkedList<Renderable> currentValue = renders.get(rl);
 		if (currentValue == null) {
 			currentValue = new LinkedList<Renderable>();
-			renders.put(i, currentValue);
+			renders.put(rl, currentValue);
 		}
 		currentValue.add(r);
 	}
@@ -127,21 +131,21 @@ public class Level {
 		Renderable a = (Renderable) e;
 
 		if (e instanceof Decoration) {
-			remove(DECORATION, a);
+			remove(RenderLayer.DECORATION, a);
 		} else if (e instanceof Item) {
-			remove(ITEM, a);
+			remove(RenderLayer.ITEM, a);
 		} else if (e instanceof Player || e instanceof Prop) {
-			remove(MAIN, a);
+			remove(RenderLayer.MAIN, a);
 		} else {
-			remove(DECORATION, a);
+			remove(RenderLayer.DECORATION, a);
 		}
 	}
 
-	private void remove(int i, Renderable e) {
+	private void remove(RenderLayer i, Renderable e) {
 		renders.get(i).remove(e);
 	}
 
-	public TreeMap<Integer, LinkedList<Renderable>> getRenders() {
+	public EnumMap<RenderLayer, LinkedList<Renderable>> getRenders() {
 		return renders;
 	}
 
@@ -183,9 +187,9 @@ public class Level {
 
 	public void setBackground(String data) {
 		if (data.contains(".")) {
-			Images.load(data, EXT.NONE);
+			Images.load(data, Images.EXT.NONE);
 		} else {
-			Images.load(data, EXT.JPG);
+			Images.load(data, Images.EXT.JPG);
 		}
 		bg = data;
 	}
@@ -211,7 +215,7 @@ public class Level {
 		}
 		for (Member e : moved) {
 			if (e instanceof Player) {
-				if(e.isOutside(0, 0, width, height)){
+				if (e.isOutside(0, 0, width, height)) {
 					((Player) e).undoMove();
 				}
 				for (Member c : elements) {
@@ -221,17 +225,18 @@ public class Level {
 						}
 						if (((Collidable) e).collide((Collidable) c)) {
 							((Player) e).undoMove();
-							//Console.log("Player " + e.getName() + " collided with " + c.getName(), in.INFO);
+							// Console.log("Player " + e.getName() +
+							// " collided with " + c.getName(), in.INFO);
 						}
 					}
 				}
 			}
 		}
 		if (!moved.isEmpty()) {
-			if (renders.containsKey(MAIN)) {
+			if (renders.containsKey(RenderLayer.MAIN)) {
 				LinkedList<Renderable> old = new LinkedList<Renderable>(
-						renders.get(MAIN));
-				renders.put(MAIN, getSorted(old));
+						renders.get(RenderLayer.MAIN));
+				renders.put(RenderLayer.MAIN, getSorted(old));
 			}
 		}
 		moved.clear();
@@ -288,7 +293,7 @@ public class Level {
 	}
 
 	public void remove(Member e) {
-		//TODO: synchonize dis function
+		// TODO: synchonize dis function
 		elements.remove(e);
 		removeRender((Renderable) e);
 	}

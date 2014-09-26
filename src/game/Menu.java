@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import gui.BufferedScreen;
 
-public class gMenu {
+public class Menu {
 	enum direction {
 		UP, DOWN
 	}
@@ -14,7 +14,7 @@ public class gMenu {
 	private int max = 2;
 	String[] options;
 
-	public gMenu(Game game) {
+	public Menu(Game game) {
 		this.g = game;
 		options = new String[max];
 		options[0] = "Resume";

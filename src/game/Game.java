@@ -30,7 +30,7 @@ public class Game {
 	HUD hud;
 	View currentView, mainView;
 	World w;
-	gMenu menu;
+	Menu menu;
 	private RenderManager rm;
 	boolean menu_activated = false;
 
@@ -62,7 +62,7 @@ public class Game {
 		currentView = mainView;
 		currentView.center(p);
 
-		menu = new gMenu(this);
+		menu = new Menu(this);
 	}
 
 	private void draw() {
@@ -190,10 +190,10 @@ public class Game {
 
 		} else {
 			if (k.getKey(KeyEvent.VK_UP)) {
-				menu.move(gMenu.direction.UP);
+				menu.move(Menu.direction.UP);
 			}
 			if (k.getKey(KeyEvent.VK_DOWN)) {
-				menu.move(gMenu.direction.DOWN);
+				menu.move(Menu.direction.DOWN);
 			}
 			if (k.getKey(KeyEvent.VK_ENTER)) {
 				menu.select();
