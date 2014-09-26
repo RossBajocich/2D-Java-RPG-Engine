@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Members>
+	<Member type="Player">
+		<name>Ross</name>
+		<id>0</id>
+		<bound>50x50</bound>
+		<img>human.png</img>
+		<hp>100</hp>
+		<mana>10</mana>
+		<attk>10</attk>
+		<def>10</def>
+		<movesp>2</movesp>
+		<speed>1</speed>
+		<width>50</width>
+		<height>50</height>
+	</Member>
+	<Member type="Player">
+		<name>Orc</name>
+		<id>1</id>
+		<bound>50x50</bound>
+		<img>ogre.png</img>
+		<hp>100</hp>
+		<mana>10</mana>
+		<attk>10</attk>
+		<def>10</def>
+		<movesp>1</movesp>
+		<speed>1</speed>
+		<width>50</width>
+		<height>50</height>
+	</Member>
+	<Member type="Item">
+		<id>0</id>
+		<attk>10</attk>
+		<bound>10x10</bound>
+		<img>sword.png</img>
+		<width>10</width>
+		<height>10</height>
+		<size>1</size>
+	</Member>
+	<Member type="Item">
+		<id>1</id>
+		<def>10</def>
+		<bound>10x10</bound>
+		<img>shield.png</img>
+		<parent>0</parent>
+		<size>1</size>
+	</Member>
+	<Member type = "Container">
+		<id>0</id>
+		<size>10</size>
+		<img>backpack.png</img>
+	</Member>
+</Members>

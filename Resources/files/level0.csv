@@ -1,0 +1,5 @@
+HEAD,id,500,500,background.png
+Player,0,10,10,ross
+NPC,1,200,200,orc
+Container,0,300,300,backpack
+Item,0,100,100,sword

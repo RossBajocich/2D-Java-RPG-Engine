@@ -41,3 +41,10 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+bin/
+LevelEditor/
+.settings/
+
+.project
+.classpath

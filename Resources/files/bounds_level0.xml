@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bounds>
+	<Bound type="50x50">
+		<bw>50</bw>
+		<bh>40</bh>
+		<bx>0</bx>
+		<by>10</by>
+	</Bound>
+	<Bound type="10x10">
+		<bw>10</bw>
+		<bh>10</bh>
+		<bx>0</bx>
+		<by>0</by>
+	</Bound>
+</Bounds>
