@@ -10,8 +10,8 @@ import characters.Player;
 public class HBars extends HElement {
 
 	Player p;
-	Color hp1 = Color.black, hp2 = Color.cyan, mana1 = Color.black,
-			mana2 = Color.blue, attk1 = Color.black, attk2 = Color.green;
+	Color hp1 = Color.red, hp2 = Color.green, mana1 = Color.black,
+			mana2 = Color.blue, attk1 = Color.black, attk2 = Color.cyan;
 
 	public HBars(int x, int y, int width, int height, Player p) {
 		super(x, y, width, height);

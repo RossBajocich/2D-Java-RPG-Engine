@@ -4,8 +4,9 @@ import items.Container;
 import items.Item;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import loaders.ResourceLoader;
@@ -13,8 +14,6 @@ import utilities.Clock;
 import utilities.Console;
 import utilities.Console.in;
 import utilities.Functor;
-import utilities.Globals;
-import utilities.Globals.Direction;
 import utilities.Images;
 import utilities.Images.EXT;
 import utilities.PlayerStats;
@@ -29,10 +28,14 @@ import graphics.Animation;
 
 public class Player extends Member implements Renderable, Collidable,
 		Interactable, Clickable {
-
+	
+	public enum Direction{
+		UP,LEFT,RIGHT,DOWN
+	}
+	
 	public static final double interactdistance = 100;
 	public static double attackDistance = 75;
-	protected Globals.Direction direction = Globals.Direction.UP;
+	protected Direction direction = Direction.UP;
 	protected boolean mainPlayer = false;
 	protected Position old;
 	protected String imgID;
@@ -55,17 +58,13 @@ public class Player extends Member implements Renderable, Collidable,
 	public Player() {
 		super();
 		captureOld();
-		Animation left = new Animation(1000, true);
-		left.addImage("link_2.png");
+		Animation left = ResourceLoader.getAnimationFromSheet("link_sheet.png", 59, 2, 18, 24, "left", 3, 200, true);
 		
-		Animation right = new Animation(1000, true);
-		right.addImage("link_4.png");
+		Animation right = ResourceLoader.getAnimationFromSheet("link_sheet.png", 62, 28, 18, 24, "right", 3, 200, true);
 		
-		Animation up = new Animation(1000, true);
-		up.addImage("link_3.png");
+		Animation up = ResourceLoader.getAnimationFromSheet("link_sheet.png", 9, 28, 17, 24, "up", 3, 200, true);
 		
-		Animation down = new Animation(1000, true);
-		down.addImage("link_1.png");
+		Animation down = ResourceLoader.getAnimationFromSheet("link_sheet.png", 4, 3, 18, 23, "down", 3, 200, true);
 		
 		//Animation die = ResourceLoader.getAnimationFromSheet("link_die.png", 0, 0, 18, 25, "die", 5, 2000, false);
 		Animation die = new Animation(1000, false);
@@ -340,8 +339,8 @@ public class Player extends Member implements Renderable, Collidable,
 		return diff / ((double) stats.speed * 1000);
 	}
 
-	public void dropItems(LinkedList<Item> keys) {
-		LinkedList<Item> temp = new LinkedList<Item>(keys);
+	public void dropItems(List<Item> keys) {
+		List<Item> temp = new ArrayList<Item>(keys);
 		for (Item key : temp) {
 			dropItem(key);
 		}

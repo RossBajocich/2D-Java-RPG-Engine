@@ -39,7 +39,6 @@ public class Timer {
 	}
 
 	public boolean isDone() {
-		// TODO Auto-generated method stub
 		return done;
 	}
 

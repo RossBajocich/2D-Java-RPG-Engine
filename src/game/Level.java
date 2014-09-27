@@ -4,6 +4,7 @@ import items.Container;
 import items.Item;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,22 +24,21 @@ import elements.Renderable;
 
 public class Level {
 	int width, height;
-	LinkedList<Member> moved = new LinkedList<Member>();
+	String bg;
 
+	EnumMap<RenderLayer, List<Renderable>> renders = new EnumMap<RenderLayer, List<Renderable>>(
+			RenderLayer.class);
+	LinkedList<Player> players = new LinkedList<Player>();
+	LinkedList<Member> elements = new LinkedList<Member>();
+	LinkedList<Member> moved = new LinkedList<Member>();
+	private Player mainPlayer;
+	
 	public enum RenderLayer {
 		DECORATION(0), ITEM(1), MAIN(2);
 		RenderLayer(int x) {
 
 		}
 	}
-
-	String bg;
-
-	EnumMap<RenderLayer, LinkedList<Renderable>> renders = new EnumMap<RenderLayer, LinkedList<Renderable>>(
-			RenderLayer.class);
-	LinkedList<Player> players = new LinkedList<Player>();
-	LinkedList<Member> elements = new LinkedList<Member>();
-	private Player mainPlayer;
 
 	public Level(int width, int height) {
 		this.width = width;
@@ -119,9 +119,9 @@ public class Level {
 	}
 
 	private void addRender(RenderLayer rl, Renderable r) {
-		LinkedList<Renderable> currentValue = renders.get(rl);
+		List<Renderable> currentValue = renders.get(rl);
 		if (currentValue == null) {
-			currentValue = new LinkedList<Renderable>();
+			currentValue = new ArrayList<Renderable>();
 			renders.put(rl, currentValue);
 		}
 		currentValue.add(r);
@@ -145,7 +145,7 @@ public class Level {
 		renders.get(i).remove(e);
 	}
 
-	public EnumMap<RenderLayer, LinkedList<Renderable>> getRenders() {
+	public EnumMap<RenderLayer, List<Renderable>> getRenders() {
 		return renders;
 	}
 
@@ -154,11 +154,11 @@ public class Level {
 				: false;
 	}
 
-	public LinkedList<Renderable> getSorted(LinkedList<Renderable> in) {
-		return sort(in);
+	public List<Renderable> getSorted(List<Renderable> old) {
+		return sort(old);
 	}
 
-	private LinkedList<Renderable> sort(LinkedList<Renderable> in) {
+	private List<Renderable> sort(List<Renderable> in) {
 		TreeMap<Integer, Renderable> vals = new TreeMap<Integer, Renderable>();
 
 		for (Renderable r : in) {
@@ -168,7 +168,7 @@ public class Level {
 				vals.put((int) (r.getY() + r.getHeight() + 1), r);
 			}
 		}
-		return new LinkedList<Renderable>(vals.values());
+		return new ArrayList<Renderable>(vals.values());
 	}
 
 	public List<Renderable> getVisible(View v) {
@@ -234,7 +234,7 @@ public class Level {
 		}
 		if (!moved.isEmpty()) {
 			if (renders.containsKey(RenderLayer.MAIN)) {
-				LinkedList<Renderable> old = new LinkedList<Renderable>(
+				List<Renderable> old = new ArrayList<Renderable>(
 						renders.get(RenderLayer.MAIN));
 				renders.put(RenderLayer.MAIN, getSorted(old));
 			}

@@ -15,11 +15,10 @@ import loaders.LevelLoader;
 import utilities.Clock;
 import utilities.Console;
 import utilities.Console.in;
-import utilities.Globals.Direction;
 import utilities.Keyboard;
 import utilities.Mouse;
 import characters.Player;
-
+import characters.Player.Direction;
 public class Game {
 	private Keyboard k;
 	private Mouse m;
