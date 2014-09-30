@@ -7,11 +7,9 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
 
 public class Mouse extends MouseAdapter {
 	private static Game g;
-	static LinkedList<mListener> listeners = new LinkedList<mListener>();
 
 	public Mouse(Game g) {
 		Mouse.g = g;
@@ -20,18 +18,6 @@ public class Mouse extends MouseAdapter {
 	public Point getMousePos() {
 		PointerInfo a = MouseInfo.getPointerInfo();
 		return a.getLocation();
-	}
-
-	public static void addListener(mListener m, Functor f) {
-		listeners.add(m);
-	}
-
-	public static void removeListener(mListener m) {
-		listeners.remove(m);
-	}
-
-	public static LinkedList<mListener> getListeners() {
-		return listeners;
 	}
 
 	public void mousePressed(MouseEvent e) {

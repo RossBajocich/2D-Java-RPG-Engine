@@ -1,6 +1,6 @@
 package gui.HUD;
 
-import elements.Renderable;
+import elements.Member;
 import game.Level;
 import game.View;
 import game.World;
@@ -14,18 +14,18 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
+import loaders.ResourceLoader;
 import utilities.Console;
 import utilities.Console.in;
-import loaders.ResourceLoader;
 import characters.Player;
 
 public class HUD {
 	BufferedScreen s;
 	World w;
-	LinkedList<HElement> elements = new LinkedList<HElement>();
+	List<HElement> elements = new ArrayList<HElement>();
 	VolatileScreen map;
 	RenderManager rm;
 	View currentView;
@@ -41,8 +41,6 @@ public class HUD {
 		Player p = w.getCurrentLevel().getMainPlayer();
 
 		int mapWidth = 100, mapHeight = 100;
-		// map = new VolatileScreen(s.getWidth() - mapWidth, s.getHeight()
-		// - mapHeight, mapWidth, mapHeight, rm);
 
 		int iWidth = 100, iHeight = 200;
 		HBackPack backpack = new HBackPack(0, s.getHeight() - iHeight, iWidth,
@@ -79,13 +77,14 @@ public class HUD {
 		float scaleX = mapW / a.getWidth();
 		float scaleY = mapH / a.getHeight();
 
-		for (List<Renderable> renders : a.getRenders().values()) {
-			for (Renderable e : renders) {
-				if (e.getImage() != null) {
-					gMap.drawImage(e.getImage(), x + (int) (e.getX() * scaleX),
-							y + (int) (e.getY() * scaleY),
-							(int) (e.getWidth() * scaleX),
-							(int) (e.getHeight() * scaleY), null);
+		for (List<Member> renders : a.getRenders().values()) {
+			for (Member e : renders) {
+				if (e.getGraphics().getImage() != null) {
+					gMap.drawImage(e.getGraphics().getImage(), x
+							+ (int) (e.getPhysics().getX() * scaleX), y
+							+ (int) (e.getPhysics().getY() * scaleY), (int) (e
+							.getGraphics().getWidth() * scaleX), (int) (e
+							.getGraphics().getHeight() * scaleY), null);
 				} else {
 					Console.log("img for member " + e + " is null", in.INFO);
 				}
@@ -143,7 +142,7 @@ public class HUD {
 		elements.add(e);
 	}
 
-	public LinkedList<HElement> getElements() {
+	public List<HElement> getElements() {
 		return elements;
 	}
 }

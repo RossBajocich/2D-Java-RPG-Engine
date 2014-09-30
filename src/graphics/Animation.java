@@ -1,7 +1,7 @@
 package graphics;
 
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import utilities.Console;
@@ -10,7 +10,7 @@ import utilities.Images;
 import utilities.Images.EXT;
 
 public class Animation {
-	List<String> images = new LinkedList<String>();
+	List<String> images = new ArrayList<String>();
 	int index = 0;
 	double last_frame_t, duration;
 	boolean loop;
@@ -44,7 +44,6 @@ public class Animation {
 				index = images.size()-1;
 			}
 		}
-		Console.log("index: " + index, in.INFO);
 		return Images.get(images.get(index));
 	}
 

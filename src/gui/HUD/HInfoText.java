@@ -5,15 +5,16 @@ import gui.BufferedScreen;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
-import utilities.PlayerStats;
+import utilities.Stats;
 import characters.Player;
 
 public class HInfoText extends HElement {
 	Player p;
-	PlayerStats ps;
-	LinkedList<String> stats = new LinkedList<String>();
+	Stats ps;
+	List<String> stats = new ArrayList<String>();
 
 	public HInfoText(int x, int y, int width, int height, Player p) {
 		super(x, y, width, height);
@@ -42,7 +43,7 @@ public class HInfoText extends HElement {
 	public void update() {
 		ps = p.getStats();
 		stats.clear();
-		stats.add("Attack: " + ps.attk);
+		stats.add("Attack: " + ps.attack);
 		stats.add("Defence: " + ps.def);
 		stats.add("Health: " + ps.health);
 		stats.add("MoveSpeed: " + ps.moveSpeed);

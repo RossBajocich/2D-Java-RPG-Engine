@@ -5,7 +5,8 @@ import items.Item;
 
 import java.util.HashMap;
 
-import characters.NPC;
+import components.PlayerInput;
+
 import characters.Player;
 import elements.Decoration;
 import elements.Member;
@@ -26,19 +27,19 @@ public class TypeMaker {
 	public static void addItem(int id, Item i) {
 		items.put(id, i);
 	}
-	
+
 	public static void addDecoration(int id, Decoration d) {
 		decorations.put(id, d);
 	}
-	
+
 	public static void addProp(int id, Prop i) {
 		props.put(id, i);
 	}
-	
+
 	public static void addContainer(int id, Container c) {
 		containers.put(id, c);
 	}
-	
+
 	public static Member createElement(int id, int x, int y, ElementData ed) {
 		Member e = null;
 
@@ -51,20 +52,17 @@ public class TypeMaker {
 			break;
 		case "player":
 			Player t = players.get(id);
-			Player p = null;
+			Player p = new Player(t.getPhysics(), t.getGraphics(),
+					t.getInteract(), t.getAttack(), t.getInput());
 			if (ed.mainPlayer) {
-				p = new Player();
 				ed.level.setMainPlayer(p);
 				p.setMainPlayer(ed.mainPlayer);
-			} else {
-				p = new NPC();
+				p.setInput(new PlayerInput());
 			}
 
 			t.copy(p);
 			p.setName(ed.name);
-			p.setHealth(p.getStats().health);
-			p.setMaxMana(p.getStats().mana);
-			p.setLevel(ed.level);
+			
 			e = p;
 			break;
 		case "item":
@@ -77,9 +75,9 @@ public class TypeMaker {
 			return null;
 		}
 
-		e.setX(x);
-		e.setY(y);
-		e.setLevel(ed.level);
+		e.getPhysics().setX(x);
+		e.getPhysics().setY(y);
+		e.getPhysics().setLevel(ed.level);
 
 		return e;
 	}

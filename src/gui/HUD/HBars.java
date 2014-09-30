@@ -27,7 +27,7 @@ public class HBars extends HElement {
 		this.mana1 = bg2;
 		this.mana2 = fg2;
 	}
-	
+
 	public void setColorsAttk(Color bg2, Color fg2) {
 		this.attk1 = bg2;
 		this.attk2 = fg2;
@@ -36,43 +36,46 @@ public class HBars extends HElement {
 	@Override
 	public void draw(BufferedScreen s) {
 		Graphics gMain = s.getGraphics();
-		int barW = width, barH = height / 3;
+		if (p != null) {
+			int barW = width, barH = height / 3;
 
-		gMain.setColor(hp1);
-		gMain.fillRect(x, y, barW, barH);
+			gMain.setColor(hp1);
+			gMain.fillRect(x, y, barW, barH);
 
-		gMain.setColor(hp2);
-		double temp = (p.getHealth() / p.getMaxHealth()) * barW;
-		gMain.fillRect(x, y, (int) temp, barH);
+			gMain.setColor(hp2);
+			double temp = (p.getAttack().getMaxHealth() / p.getAttack()
+					.getMaxHealth()) * barW;
+			gMain.fillRect(x, y, (int) temp, barH);
 
-		gMain.setColor(Color.black);
-		gMain.drawRect(x, y, barW, barH);
+			gMain.setColor(Color.black);
+			gMain.drawRect(x, y, barW, barH);
 
-		gMain.drawString("hp: " + p.getHealth(), x + 5, y + 18);
+			gMain.drawString("hp: " + p.getAttack().getMaxHealth(), x + 5, y + 18);
 
-		int y1 = y + barH;
-		//mana
-		gMain.setColor(mana1);
-		gMain.fillRect(x, y1, barW, barH);
+			int y1 = y + barH;
+			// mana
+			gMain.setColor(mana1);
+			gMain.fillRect(x, y1, barW, barH);
 
-		gMain.setColor(mana2);
-		temp = (p.getStats().mana / p.getMaxMana()) * barW;
-		gMain.fillRect(x, y1, (int) temp, barH);
+			gMain.setColor(mana2);
+			temp = (p.getStats().mana / p.getAttack().getMaxMana()) * barW;
+			gMain.fillRect(x, y1, (int) temp, barH);
 
-		gMain.setColor(Color.black);
-		gMain.drawRect(x, y1, barW, barH);
+			gMain.setColor(Color.black);
+			gMain.drawRect(x, y1, barW, barH);
 
-		gMain.drawString("mana: " + p.getStats().mana, x + 5, y1 + 18);
-		
-		y1 = y1 + barH;
-		barH = 10;
+			gMain.drawString("mana: " + p.getStats().mana, x + 5, y1 + 18);
 
-		gMain.setColor(attk1);
-		gMain.fillRect(x, y1, barW, barH);
+			y1 = y1 + barH;
+			barH = 10;
 
-		gMain.setColor(attk2);
-		temp = p.getWaitRatio() * barW;
-		gMain.fillRect(x, y1, (int) temp, barH);
+			gMain.setColor(attk1);
+			gMain.fillRect(x, y1, barW, barH);
+
+			gMain.setColor(attk2);
+			temp = p.getAttack().getWaitRatio() * barW;
+			gMain.fillRect(x, y1, (int) temp, barH);
+		}
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import utilities.Keyboard;
 import utilities.Mouse;
 
+@SuppressWarnings("serial")
 public class Window extends JFrame {
 	private static RenderManager rm;
 	private static GameLoop gameLoop;
@@ -18,7 +19,6 @@ public class Window extends JFrame {
 	public Window(String title, int width, int height) {
 		super(title);
 		setSize(width, height);
-		setResizable(true);
 		setIgnoreRepaint(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIgnoreRepaint(true);
@@ -32,7 +32,7 @@ public class Window extends JFrame {
 
 	public static void main(String[] args) {
 		Window w = new Window("Game", 600, 600);
-		game = new Game(rm, k, m);
+		game = new Game(rm, m);
 		gameLoop = new GameLoop(game);
 		m = new Mouse(game);
 		while (true) {

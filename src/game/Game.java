@@ -1,10 +1,11 @@
 package game;
 
-import elements.Renderable;
+import elements.Member;
 import gui.BufferedScreen;
 import gui.RenderManager;
 import gui.VolatileScreen;
 import gui.HUD.HUD;
+import gui.RenderManager.ScreenLayer;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,10 +19,11 @@ import utilities.Console.in;
 import utilities.Keyboard;
 import utilities.Mouse;
 import characters.Player;
-import characters.Player.Direction;
+import components.GraphicsComponent;
+import components.PhysicsComponent;
+
 public class Game {
-	private Keyboard k;
-	private Mouse m;
+	Mouse m;
 	Player p;
 	int width, height;
 	VolatileScreen mainScr;
@@ -32,10 +34,14 @@ public class Game {
 	Menu menu;
 	private RenderManager rm;
 	boolean menu_activated = false;
+	private GameState state;
 
-	public Game(RenderManager rm, Keyboard k, Mouse m) {
+	public enum GameState {
+		RUNNING, PAUSED
+	}
+
+	public Game(RenderManager rm, Mouse m) {
 		this.rm = rm;
-		this.k = k;
 		this.m = m;
 
 		Level l = LevelLoader.getLevel("level0");
@@ -53,8 +59,8 @@ public class Game {
 				mainScr.getHeight(), rm);
 		hud = new HUD(hudScr, w, rm);
 
-		rm.addScreen(0, mainScr);
-		rm.addScreen(1, hudScr);
+		rm.addScreen(ScreenLayer.MAIN, mainScr);
+		rm.addScreen(ScreenLayer.HUD, hudScr);
 
 		mainView = new View(300, 300, l.getWidth(), l.getHeight(), p);
 		Console.log("w:" + l.getWidth() + " h: " + l.getHeight(), in.INFO);
@@ -62,6 +68,16 @@ public class Game {
 		currentView.center(p);
 
 		menu = new Menu(this);
+
+		state = GameState.RUNNING;
+	}
+
+	public void setState(GameState s) {
+		state = s;
+	}
+
+	public GameState getState() {
+		return state;
 	}
 
 	private void draw() {
@@ -85,47 +101,49 @@ public class Game {
 		int scrHeight = Math.min(mainScr.getHeight(), a.getBackground()
 				.getHeight());
 
-		//Console.log("vx: " + viewX + " vy: " + viewY + " vw: " + viewWidth + " vh: " + viewHeight, in.INFO);
-		
 		gMain.drawImage(
 				a.getBackground().getSubimage(viewX, viewY, viewWidth,
 						viewHeight), 0, 0, scrWidth, scrHeight, null);
 
-		for (List<Renderable> renders : a.getRenders().values()) {
-			for (Renderable e : renders) {
-				if (e.isWithin(currentView)) {
+		for (List<Member> renders : a.getRenders().values()) {
+			for (Member e : renders) {
+				if (e.getGraphics().isWithin(currentView)) {
 					// Console.log("drew an object?", in.INFO);
-					int x = (int) ((e.getX() - currentView.getX()) * scaleX);
-					int y = (int) ((e.getY() - currentView.getY()) * scaleY);
+					PhysicsComponent physics = e.getPhysics();
+					GraphicsComponent graphics = e.getGraphics();
 
-					if (e.getImage() != null) {
-						gMain.drawImage(e.getImage(), x, y,
-								(int) (e.getWidth() * scaleX),
-								(int) (e.getHeight() * scaleY), null);
+					int x = (int) ((physics.getX() - currentView.getX()) * scaleX);
+					int y = (int) ((physics.getY() - currentView.getY()) * scaleY);
+
+					if (graphics.getImage() != null) {
+						gMain.drawImage(graphics.getImage(), x, y,
+								(int) (graphics.getWidth() * scaleX),
+								(int) (graphics.getHeight() * scaleY), null);
 					} else {
-						Console.log(
-								"img for object at " + e.getX() + ", "
-										+ e.getY() + " is null!!", in.INFO);
+						Console.log("img for object at " + physics.getX()
+								+ ", " + physics.getY() + " is null!!", in.INFO);
 					}
 					if (e instanceof Player && !((Player) e).isMainPlayer()) {
 						Player p = (Player) e;
 						int barW = 100, barH = 25;
-						int x1 = (int) ((e.getX() - currentView.getX()) * scaleX)
+						int x1 = (int) ((physics.getX() - currentView.getX()) * scaleX)
 								- barW;
-						int y1 = (int) ((e.getY() - currentView.getY()) * scaleY)
+						int y1 = (int) ((physics.getY() - currentView.getY()) * scaleY)
 								- barH;
 
 						gMain.setColor(Color.red);
 						gMain.fillRect(x1, y1, barW, barH);
 
 						gMain.setColor(Color.green);
-						double temp = (p.getHealth() / p.getMaxHealth()) * barW;
+						double temp = ((double) p.getAttack().getHealth() / p
+								.getAttack().getMaxHealth()) * barW;
 						gMain.fillRect(x1, y1, (int) temp, barH);
 
 						gMain.setColor(Color.black);
 						gMain.drawRect(x1, y1, barW, barH);
 
-						gMain.drawString("hp: " + p.getHealth(), x1 + 5,
+						gMain.drawString("hp: " + p.getAttack().getHealth()
+								+ " / " + p.getAttack().getMaxHealth(), x1 + 5,
 								y1 + 18);
 
 						y1 = y1 + barH;
@@ -135,7 +153,7 @@ public class Game {
 						gMain.fillRect(x1, y1, barW, barH);
 
 						gMain.setColor(Color.blue);
-						temp = p.getWaitRatio() * barW;
+						temp = p.getAttack().getWaitRatio() * barW;
 						gMain.fillRect(x1, y1, (int) temp, barH);
 					}
 				}
@@ -154,29 +172,10 @@ public class Game {
 		// add support for only updating certain amounts of game time to
 		// compensate for lag
 
-		if (!menu_activated) {
+		switch (state) {
+		case RUNNING:
 			// game logic
 			Player p = w.getCurrentLevel().getMainPlayer();
-
-			if (k.getKey(KeyEvent.VK_W)) {
-				p.move(Direction.UP);
-			}else
-			if (k.getKey(KeyEvent.VK_S)) {
-				p.move(Direction.DOWN);
-			}else
-			if (k.getKey(KeyEvent.VK_A)) {
-				p.move(Direction.LEFT);
-			}else
-			if (k.getKey(KeyEvent.VK_D)) {
-				p.move(Direction.RIGHT);
-			}
-			
-			if (k.getKey(KeyEvent.VK_F)) {
-				w.getCurrentLevel().attack(p);
-			}
-			if (k.getKey(KeyEvent.VK_I)) {
-				w.getCurrentLevel().interact(p);
-			}
 
 			Clock.update();
 
@@ -184,20 +183,23 @@ public class Game {
 			hud.update();
 			draw();
 			// Console.log("ran!", in.INFO);
-			
-			// end game logic
 
-		} else {
-			if (k.getKey(KeyEvent.VK_UP)) {
+			// end game logic
+			break;
+		case PAUSED:
+			if (Keyboard.getKey(KeyEvent.VK_UP)) {
 				menu.move(Menu.direction.UP);
 			}
-			if (k.getKey(KeyEvent.VK_DOWN)) {
+			if (Keyboard.getKey(KeyEvent.VK_DOWN)) {
 				menu.move(Menu.direction.DOWN);
 			}
-			if (k.getKey(KeyEvent.VK_ENTER)) {
+			if (Keyboard.getKey(KeyEvent.VK_ENTER)) {
 				menu.select();
 			}
 			menu.draw(hudScr);
+			break;
+		default:
+
 		}
 	}
 }

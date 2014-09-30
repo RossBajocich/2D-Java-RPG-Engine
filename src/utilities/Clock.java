@@ -1,17 +1,18 @@
 package utilities;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Clock {
 
-	private static LinkedList<Timer> timers = new LinkedList<Timer>();
+	private static List<Timer> timers = new ArrayList<Timer>();
 	
 	public Clock(){
 		
 	}
 	
 	public static void update(){
-		LinkedList<Timer> del =new LinkedList<Timer>();
+		List<Timer> del =new ArrayList<Timer>();
 		for(Timer t : timers){
 			if(t.isDone()){
 				del.add(t);

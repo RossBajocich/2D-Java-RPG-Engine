@@ -3,28 +3,27 @@ package loaders;
 import java.awt.Rectangle;
 
 public class Bounds {
-	public int bw, bh, bx, by;
-
+	Rectangle rect;
+	
 	// add shape support
 	public Bounds(int bw, int bh, int bx, int by) {
-		this.bw = bw;
-		this.bh = bh;
-		this.bx = bx;
-		this.by = by;
+		rect = new Rectangle(bx,by,bw,bh);
 	}
 
 	public Bounds(int bw, int bh) {
-		this.bw = bw;
-		this.bh = bh;
-		bx = 0;
-		by = 0;
+		rect = new Rectangle(0,0,bw,bh);
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle(bx, by, bw, bh);
+		return rect;
 	}
 	
 	public Rectangle getBounds(int xOffset, int yOffset) {
-		return new Rectangle(xOffset + bx, yOffset + by, bw, bh);
+		return new Rectangle(xOffset + rect.x, yOffset + rect.y, rect.width, rect.height);
+	}
+
+	public boolean intersects(Rectangle bounds) {
+		// TODO Auto-generated method stub
+		return rect.intersects(bounds.getBounds());
 	}
 }

@@ -1,38 +1,36 @@
 package game;
 
-import items.Container;
 import items.Item;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
 import utilities.Console;
 import utilities.Console.in;
 import utilities.Images;
-import characters.NPC;
 import characters.Player;
-import elements.Collidable;
+
+import components.PhysicsComponent;
+
 import elements.Decoration;
-import elements.Interactable;
 import elements.Member;
 import elements.Prop;
-import elements.Renderable;
 
 public class Level {
 	int width, height;
 	String bg;
 
-	EnumMap<RenderLayer, List<Renderable>> renders = new EnumMap<RenderLayer, List<Renderable>>(
+	EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
 			RenderLayer.class);
-	LinkedList<Player> players = new LinkedList<Player>();
-	LinkedList<Member> elements = new LinkedList<Member>();
-	LinkedList<Member> moved = new LinkedList<Member>();
+
+	List<Player> players = new ArrayList<Player>();
+	List<Member> elements = new ArrayList<Member>();
+	List<PhysicsComponent> moved = new ArrayList<PhysicsComponent>();
 	private Player mainPlayer;
-	
+
 	public enum RenderLayer {
 		DECORATION(0), ITEM(1), MAIN(2);
 		RenderLayer(int x) {
@@ -47,6 +45,26 @@ public class Level {
 
 	public Level() {
 
+	}
+
+	/*
+	 * Runs through all objects, and checks if PhysicsComponent p collides with
+	 * any that have a PhysicsComponent
+	 */
+	public boolean tryMove(PhysicsComponent p, double x_move, double y_move) {
+		if (p.getX() + x_move < 0 || p.getX() + p.getBounds().width >= width
+				|| p.getY() + y_move < 0 || p.getY() + y_move > height) {
+			return false;
+		}
+		for (Member m : elements) {
+			if (m.getPhysics().getBounds() != null) {
+				if (m.getPhysics().getBounds(x_move, y_move)
+						.intersects(p.getBounds())) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public void setWidth(int width) {
@@ -71,23 +89,14 @@ public class Level {
 				+ v.getHeight());
 	}
 
-	/*
-	 * private void createBackground() { BufferedImage newBg = new
-	 * BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB); Graphics g =
-	 * newBg.createGraphics(); for (int x = 0; x < width; x++) { for (int y = 0;
-	 * y < height; y++) { g.drawImage(bg, x * bg.getWidth(), y * bg.getHeight(),
-	 * null); } } g.dispose(); }
-	 */
-
 	public BufferedImage getBackground() {
 		if (bg == null) {
-			// createBackground();
 			throw new NullPointerException("Background image is null!");
 		}
 		return Images.get(bg);
 	}
 
-	public LinkedList<Member> getElements() {
+	public List<Member> getElements() {
 		return elements;
 	}
 
@@ -95,88 +104,78 @@ public class Level {
 		if (!elements.contains(e)) {
 			elements.add(e);
 		}
-		Renderable a = (Renderable) e;
 
-		if (e instanceof Decoration) {
-			addRender(RenderLayer.DECORATION, a);
-		} else if (e instanceof Item) {
-			addRender(RenderLayer.ITEM, a);
-		} else if (e instanceof Prop || e instanceof Player) {
-			addRender(RenderLayer.MAIN, a);
-			if (e instanceof Player) {
-				if (!players.contains((Player) e)) {
-					Console.log("player " + e.getName(), in.INFO);
-					players.add((Player) e);
-				}
+		if (e.getGraphics() != null) {
+			// TODO: remove this, very useless
+			if (e instanceof Decoration) {
+				addRender(RenderLayer.DECORATION, e);
+			} else if (e instanceof Item) {
+				addRender(RenderLayer.ITEM, e);
+			} else {
+				addRender(RenderLayer.MAIN, e);
 			}
-		} else if (e instanceof Decoration) {
-			addRender(RenderLayer.DECORATION, a);
-		} else if (e instanceof Container) {
-			addRender(RenderLayer.DECORATION, a);
 		} else {
 			Console.log("Not a valid object @ level -> addMember()", in.ERROR);
 		}
+		if (e instanceof Player) {
+			players.add((Player) e);
+		}
 	}
 
-	private void addRender(RenderLayer rl, Renderable r) {
-		List<Renderable> currentValue = renders.get(rl);
+	private void addRender(RenderLayer rl, Member r) {
+		List<Member> currentValue = renders.get(rl);
 		if (currentValue == null) {
-			currentValue = new ArrayList<Renderable>();
+			currentValue = new ArrayList<Member>();
 			renders.put(rl, currentValue);
 		}
 		currentValue.add(r);
 	}
 
-	private void removeRender(Renderable e) {
-		Renderable a = (Renderable) e;
-
+	private void removeRender(Member e) {
 		if (e instanceof Decoration) {
-			remove(RenderLayer.DECORATION, a);
+			remove(RenderLayer.DECORATION, e);
 		} else if (e instanceof Item) {
-			remove(RenderLayer.ITEM, a);
+			remove(RenderLayer.ITEM, e);
 		} else if (e instanceof Player || e instanceof Prop) {
-			remove(RenderLayer.MAIN, a);
+			remove(RenderLayer.MAIN, e);
 		} else {
-			remove(RenderLayer.DECORATION, a);
+			remove(RenderLayer.DECORATION, e);
 		}
 	}
 
-	private void remove(RenderLayer i, Renderable e) {
+	private void remove(RenderLayer i, Member e) {
 		renders.get(i).remove(e);
 	}
 
-	public EnumMap<RenderLayer, List<Renderable>> getRenders() {
+	public EnumMap<RenderLayer, List<Member>> getRenders() {
 		return renders;
 	}
 
-	private boolean compare(Renderable r1, Renderable r2) {
-		return r1.getY() + r1.getHeight() < r2.getY() + r2.getHeight() ? true
-				: false;
-	}
-
-	public List<Renderable> getSorted(List<Renderable> old) {
+	public List<Member> getSorted(List<Member> old) {
 		return sort(old);
 	}
 
-	private List<Renderable> sort(List<Renderable> in) {
-		TreeMap<Integer, Renderable> vals = new TreeMap<Integer, Renderable>();
+	private List<Member> sort(List<Member> in) {
+		TreeMap<Integer, Member> vals = new TreeMap<Integer, Member>();
 
-		for (Renderable r : in) {
-			if (!vals.containsKey((int) (r.getY() + r.getHeight()))) {
-				vals.put((int) (r.getY() + r.getHeight()), r);
+		for (Member r : in) {
+			PhysicsComponent p = r.getPhysics();
+			if (!vals
+					.containsKey((int) (p.getY() + r.getGraphics().getHeight()))) {
+				vals.put((int) (p.getY() + r.getGraphics().getHeight()), r);
 			} else {
-				vals.put((int) (r.getY() + r.getHeight() + 1), r);
+				vals.put((int) (p.getY() + r.getGraphics().getHeight() + 1), r);
 			}
 		}
-		return new ArrayList<Renderable>(vals.values());
+		return new ArrayList<Member>(vals.values());
 	}
 
-	public List<Renderable> getVisible(View v) {
+	public List<Member> getVisible(View v) {
 		// NOT USED WTF YOURE STUPID
-		LinkedList<Renderable> out = new LinkedList<Renderable>();
-		for (List<Renderable> r : renders.values()) {
-			for (Renderable real : r) {
-				if (real.isWithin(v)) {
+		List<Member> out = new ArrayList<Member>();
+		for (List<Member> r : renders.values()) {
+			for (Member real : r) {
+				if (real.getGraphics().isWithin(v)) {
 					out.add(real);
 				}
 			}
@@ -195,10 +194,6 @@ public class Level {
 	}
 
 	public Player getMainPlayer() {
-		/*
-		 * for (Player p : players) { if (((Player) p).isMainPlayer()) { return
-		 * (Player) p; } }
-		 */
 		if (mainPlayer != null) {
 			return mainPlayer;
 		} else {
@@ -208,33 +203,13 @@ public class Level {
 	}
 
 	public void update() {
-		for (Player p : players) {
-			if (p instanceof NPC) {
-				((NPC) p).step();
-			}
+		for (Member p : elements) {
+			p.update();
 		}
-		for (Member e : moved) {
-			if (e instanceof Player) {
-				if (e.isOutside(0, 0, width, height)) {
-					((Player) e).undoMove();
-				}
-				for (Member c : elements) {
-					if (c instanceof Collidable) {
-						if (e == c) {
-							continue;
-						}
-						if (((Collidable) e).collide((Collidable) c)) {
-							((Player) e).undoMove();
-							// Console.log("Player " + e.getName() +
-							// " collided with " + c.getName(), in.INFO);
-						}
-					}
-				}
-			}
-		}
+
 		if (!moved.isEmpty()) {
 			if (renders.containsKey(RenderLayer.MAIN)) {
-				List<Renderable> old = new ArrayList<Renderable>(
+				List<Member> old = new ArrayList<Member>(
 						renders.get(RenderLayer.MAIN));
 				renders.put(RenderLayer.MAIN, getSorted(old));
 			}
@@ -242,63 +217,34 @@ public class Level {
 		moved.clear();
 	}
 
-	public boolean interact(Player sender) {
-		// returns false if nothing is found
-		Interactable found = null;
-		double foundDist = 0;
-		for (Member i : elements) {
-			if (i instanceof Interactable) {
-				if (sender == i) {
-					continue;
-				}
-				double dist = sender.getDistance(i);
-				if (dist < Player.interactdistance) {
-					if (found == null) {
-						found = (Interactable) i;
-						foundDist = dist;
-						continue;
-					}
-					if (dist < foundDist) {
-						found = (Interactable) i;
-					}
-				}
-			}
-		}
-		if (found != null) {
-			sender.interact(found);
-			found.onInteract(sender);
-			return true;
-		}
-		return true;
-	}
-
 	public boolean attack(Player sender) {
 		for (Player p : players) {
 			if (sender == p) {
 				continue;
 			}
-			if (sender.getDistance(p) < Player.attackDistance) {
-				sender.attack(p);
-				p.onAttack(sender);
+			if (sender.getPhysics().getDistance(p) < sender.getAttack()
+					.getAttackDistance()) {
+				// Should i call onAttack() here? Or inside attack()?
+				sender.getAttack().attack(p);
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void notifyMove(Member e) {
-		if (!moved.contains(e)) {
-			moved.add(e);
+	public void notifyMove(PhysicsComponent physicsComponent) {
+		if (!moved.contains(physicsComponent)) {
+			moved.add(physicsComponent);
 		}
 	}
 
 	public void remove(Member e) {
 		// TODO: synchonize dis function
 		elements.remove(e);
-		removeRender((Renderable) e);
+		removeRender(e);
 	}
 
-	public LinkedList<Player> getPlayers() {
+	public List<Player> getPlayers() {
 		// TODO Auto-generated method stub
 		return players;
 	}

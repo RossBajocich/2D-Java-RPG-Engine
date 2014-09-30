@@ -35,7 +35,7 @@ public class Images {
 		if (!images.containsKey(id)) {
 			images.put(id, ResourceLoader.getImage(id + t.toString()));
 		} else {
-			Console.log("alread contains a key for " + id, in.INFO);
+			Console.log("already contains a key for " + id, in.INFO);
 		}
 	}
 

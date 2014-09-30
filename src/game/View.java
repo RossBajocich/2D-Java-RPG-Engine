@@ -35,8 +35,10 @@ public class View {
 	}
 
 	public void update() {
-		int centerX = (int) (follow.getX() + (follow.getWidth() / 2));
-		int centerY = (int) (follow.getY() + (follow.getHeight() / 2));
+		int centerX = (int) (follow.getPhysics().getX() + (follow.getPhysics()
+				.getBounds().width / 2));
+		int centerY = (int) (follow.getPhysics().getY() + (follow.getPhysics()
+				.getBounds().height / 2));
 
 		if ((centerX - (width / 2) >= 0) && (centerX + (width / 2) < widthMax)) {
 			x = (int) (centerX - (width / 2));

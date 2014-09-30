@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.EnumMap;
 import java.util.TreeMap;
 
 import javax.swing.JFrame;
@@ -7,22 +8,24 @@ import javax.swing.JFrame;
 import utilities.Console;
 
 public class RenderManager implements Runnable {
-	JFrame parent;
-	VolatileScreen main;
-	TreeMap<Integer, Screen> screens;
+	private JFrame parent;
+	private VolatileScreen main;
+	private EnumMap<ScreenLayer, Screen> screens = new EnumMap<ScreenLayer, Screen>(ScreenLayer.class);
 
+	public enum ScreenLayer {
+		MAIN,HUD
+	}
+	
 	public RenderManager(JFrame parent) {
 		this.parent = parent;
 		main = new VolatileScreen(0, 0, parent.getWidth(), parent.getHeight(), this);
-		// main.setBackground(ResourceLoader.getImage("background.jpg"));
-		screens = new TreeMap<Integer, Screen>();
 	}
 
 	public JFrame getWindow() {
 		return parent;
 	}
 
-	public void addScreen(Integer key, Screen s) {
+	public void addScreen(ScreenLayer key, Screen s) {
 		screens.put(key, s);	//TODO: Cannot have multiple screens for the same key (supposed to be depth..)
 	}
 

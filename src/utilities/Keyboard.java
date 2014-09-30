@@ -2,24 +2,15 @@ package utilities;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Keyboard implements KeyListener {
 
-	private static boolean[] keys;
-	private static LinkedList<Integer> pressed;
+	private static boolean[] keys = new boolean[512];;
+	private static List<Integer> pressed = new ArrayList<Integer>();
 
-	public static int KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT;
-
-	public Keyboard() {
-		// TODO Auto-generated constructor stub
-		keys = new boolean[512];
-		pressed = new LinkedList<Integer>();
-		KEY_UP = KeyEvent.VK_W;
-		KEY_DOWN = KeyEvent.VK_S;
-		KEY_RIGHT = KeyEvent.VK_D;
-		KEY_LEFT = KeyEvent.VK_A;
-	}
+	public static int KEY_UP = KeyEvent.VK_W, KEY_DOWN = KeyEvent.VK_S, KEY_LEFT  = KeyEvent.VK_D, KEY_RIGHT = KeyEvent.VK_A;
 
 	public void keyTyped(KeyEvent e) {
 	}
@@ -43,7 +34,7 @@ public class Keyboard implements KeyListener {
 
 	}
 
-	public boolean getKey(int k) {
+	public static boolean getKey(int k) {
 		if (k >= 0 && k < keys.length) {
 			return keys[k];
 		} else {
@@ -51,11 +42,11 @@ public class Keyboard implements KeyListener {
 		}
 	}
 
-	public boolean[] getKeys() {
+	public static boolean[] getKeys() {
 		return keys;
 	}
 
-	public LinkedList<Integer> getPressed() {
+	public static List<Integer> getPressed() {
 		if (pressed.size() > 0) {
 			int i = 0;
 			for (Integer x : pressed) {

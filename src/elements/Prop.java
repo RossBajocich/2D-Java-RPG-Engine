@@ -1,77 +1,31 @@
 package elements;
 
-import java.awt.Image;
+import components.GraphicsComponent;
+import components.InteractComponent;
+import components.PhysicsComponent;
 
-import utilities.Images;
+public class Prop extends Member {
 
-public class Prop extends Member implements Collidable, Interactable, Renderable, Clickable {
+	protected InteractComponent interact;
 
-	private String imgID;
-
-	public Prop(double x, double y, int width, int height) {
-		super(x, y, width, height);
-		// TODO Auto-generated constructor stub
-	}
-
-	public Prop() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public boolean collide(Collidable p) {
-		return getBounds().intersects(p.getBounds());
-	}
-
-	@Override
-	public void interact(Interactable i) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onInteract(Interactable i) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setImage(String id) {
-		// TODO Auto-generated method stub
-		Images.add(id);
-		imgID = id;
-	}
-
-	@Override
-	public Image getImage() {
-		// TODO Auto-generated method stub
-		return Images.get(imgID);
-	}
-
-	@Override
-	public String getImageName() {
-		// TODO Auto-generated method stub
-		return imgID;
-	}
-
-	@Override
-	public void step() {
-		// TODO Auto-generated method stub
-		
+	public Prop(PhysicsComponent physics, GraphicsComponent graphics,
+			InteractComponent interact) {
+		super(physics, graphics);
+		this.interact = interact;
+		components.add(interact);
 	}
 
 	@Override
 	public Member clone() {
-		Prop p = new Prop();
-		p.bounds = bounds;
-		p.type = type;
-		p.width = width;
-		p.height = height;
-		p.imgID = imgID;
-		p.name = name;
+		Prop p = new Prop(physics, graphics, interact);
+
+		super.copy(p);
+
 		return p;
 	}
 
 	@Override
-	public void onClick(int x, int y, button b) {
-		
+	public void update() {
+		super.update();
 	}
 }

@@ -5,11 +5,11 @@
 		<id>0</id>
 		<bound>50x50</bound>
 		<img>human.png</img>
-		<hp>100</hp>
+		<health>100</health>
 		<mana>10</mana>
-		<attk>10</attk>
-		<def>10</def>
-		<movesp>2</movesp>
+		<attack>10</attack>
+		<defence>10</defence>
+		<movespeed>2</movespeed>
 		<speed>1</speed>
 		<width>50</width>
 		<height>50</height>
@@ -19,18 +19,18 @@
 		<id>1</id>
 		<bound>50x50</bound>
 		<img>ogre.png</img>
-		<hp>100</hp>
+		<health>100</health>
 		<mana>10</mana>
-		<attk>10</attk>
-		<def>10</def>
-		<movesp>1</movesp>
+		<attack>10</attack>
+		<defence>10</defence>
+		<movespeed>1</movespeed>
 		<speed>1</speed>
 		<width>50</width>
 		<height>50</height>
 	</Member>
 	<Member type="Item">
 		<id>0</id>
-		<attk>10</attk>
+		<attack>10</attack>
 		<bound>10x10</bound>
 		<img>sword.png</img>
 		<width>10</width>

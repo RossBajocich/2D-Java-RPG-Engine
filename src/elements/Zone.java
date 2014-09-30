@@ -1,46 +1,32 @@
 package elements;
 
-import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import utilities.Console;
 import characters.Player;
 
-public class Zone {
+import components.PhysicsComponent;
 
-	Map<Player, Boolean> states = new HashMap<Player, Boolean>();
-	int x, y, width, height;
+public class Zone extends Member {
+	List<Player> inside = new ArrayList<Player>();
 
-	public Zone(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public Zone(PhysicsComponent physics) {
+		// zones are not drawn on screen, so graphics is null
+		super(physics, null);
 	}
 
 	public Zone() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public Rectangle2D getBounds() {
-		// TODO Auto-generated method stub
-		return new Rectangle2D.Double(x, y, width, height);
-	}
-
-	public boolean collide(Player p) {
-		if (p.getBounds().intersects(getBounds())) {
-			if (!states.containsKey(p)) {
-				states.put(p, false);
-			}
-			if (states.get(p) == false) {
+	public void onCollide(Player p) {
+		if (p.getPhysics().getBounds().intersects(physics.getBounds())) {
+			if (inside.contains(p)) {
 				onEntry(p);
 			} else {
 				onExit(p);
 			}
-			return true;
 		}
-		return false;
 	}
 
 	private void onEntry(Player p) {
@@ -49,7 +35,17 @@ public class Zone {
 	}
 
 	private void onExit(Player p) {
-		Console.log(p.getName() + " has just Exited this zone",
-				Console.in.INFO);
+		Console.log(p.getName() + " has just Exited this zone", Console.in.INFO);
+	}
+
+	@Override
+	public Member clone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update() {
+		super.update();
 	}
 }

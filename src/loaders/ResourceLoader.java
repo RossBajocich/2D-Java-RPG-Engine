@@ -42,15 +42,14 @@ public class ResourceLoader {
 	}
 
 	public static Animation getAnimationFromSheet(String fileName, int xloc,
-			int yloc, int width, int height, String id, int count, double frame_duration, boolean loop) {
+			int yloc, int width, int height, String id, int count, int offset, double frame_duration, boolean loop) {
 		Animation a = new Animation(frame_duration, loop);
 		BufferedImage b = getImage(fileName);
 
 		int i = 0;
 		for (int x = 0; x < count; x++) {
-			Images.add(b.getSubimage(xloc + (x * width), yloc, width, height),
+			Images.add(b.getSubimage(xloc + (x * width) + offset, yloc, width, height),
 					id + "_" + i);
-			Console.log("thingy: " + id + "_" + i, in.INFO);
 			a.addImage(id + "_" + i);
 			i++;
 		}

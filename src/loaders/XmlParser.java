@@ -4,8 +4,9 @@ import items.Container;
 import items.Item;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,18 +19,26 @@ import org.xml.sax.SAXException;
 
 import utilities.Console;
 import utilities.Console.in;
-import utilities.ItemStats;
-import utilities.PlayerStats;
+import utilities.Stats;
 import characters.Player;
+
+import components.AttackComponent;
+import components.GraphicsComponent;
+import components.InteractComponent;
+import components.ItemInteract;
+import components.NPCInput;
+import components.PhysicsComponent;
+
 import elements.Decoration;
 import elements.Member;
 import elements.Prop;
+import graphics.Animation;
 
 public class XmlParser {
 	private static final int INT_VALUE_NONE = -420420420;
 	private static final int INT_VALUE_FAIL = 0;
 	private static Document dom, domBounds;
-	private static LinkedList<Member> members = new LinkedList<Member>();
+	private static List<Member> members = new ArrayList<Member>();
 	private static HashMap<String, Bounds> bounds = new HashMap<String, Bounds>();
 
 	public static void parseXmlFile(String fileName) {
@@ -123,8 +132,6 @@ public class XmlParser {
 	 * object and return it
 	 */
 	private static Member getMember(Element data) {
-		// for each <employee> element get text or int values of
-		// name ,id, age and name
 		String name = getTextValue(data, "name");
 
 		String type = data.getAttribute("type");
@@ -135,54 +142,7 @@ public class XmlParser {
 		width = getIntValue(data, "width");
 		height = getIntValue(data, "height");
 
-		// TODO: fix parent code, currently doesn't work becuase getIntValue
-		// returns 0 on purpose to fix item stat issues
-		if (getIntValue(data, "parent") != INT_VALUE_NONE) {
-			switch (type) {
-			case "player":
-				if (width == INT_VALUE_NONE) {
-					width = TypeMaker.players.get(getIntValue(data, "parent"))
-							.getWidth();
-				}
-				if (height == INT_VALUE_NONE) {
-					height = TypeMaker.players.get(getIntValue(data, "parent"))
-							.getHeight();
-				}
-				break;
-			case "item":
-				if (width == INT_VALUE_NONE) {
-					width = TypeMaker.items.get(getIntValue(data, "parent"))
-							.getWidth();
-				}
-				if (height == INT_VALUE_NONE) {
-					height = TypeMaker.items.get(getIntValue(data, "parent"))
-							.getHeight();
-				}
-				break;
-			case "prop":
-				if (width == INT_VALUE_NONE) {
-					width = TypeMaker.props.get(getIntValue(data, "parent"))
-							.getWidth();
-				}
-				if (height == INT_VALUE_NONE) {
-					height = TypeMaker.props.get(getIntValue(data, "parent"))
-							.getHeight();
-				}
-				break;
-			case "decoration":
-				if (width == INT_VALUE_NONE) {
-					width = TypeMaker.decorations.get(
-							getIntValue(data, "parent")).getWidth();
-				}
-				if (height == INT_VALUE_NONE) {
-					height = TypeMaker.decorations.get(
-							getIntValue(data, "parent")).getHeight();
-				}
-				break;
-			default:
-
-			}
-		}
+		Bounds b;
 
 		if (getTextValue(data, "bound") == null) {
 			bx = getIntValue(data, "bx");
@@ -190,113 +150,100 @@ public class XmlParser {
 
 			bw = getIntValue(data, "bw");
 			bh = getIntValue(data, "bh");
+			b = new Bounds(bx, by, bw, bh);
 		} else {
 			bs = getTextValue(data, "bound");
-			Bounds b = bounds.get(bs.trim());
-			bx = b.bx;
-			by = b.by;
-			bw = b.bw;
-			bh = b.bh;
+			b = bounds.get(bs.trim());
 		}
 
 		id = getIntValue(data, "id");
 
-		int attk, def, speed, health, moveSpeed, mana, size;
-		attk = getIntValue(data, "attk");
-		def = getIntValue(data, "def");
+		int attack, def, speed, health, moveSpeed, mana, size;
+		attack = getIntValue(data, "attack");
+		def = getIntValue(data, "defence");
 		speed = getIntValue(data, "speed");
-		health = getIntValue(data, "hp");
-		moveSpeed = getIntValue(data, "movesp");
+		health = getIntValue(data, "health");
+		moveSpeed = getIntValue(data, "movespeed");
 		mana = getIntValue(data, "mana");
 		size = getIntValue(data, "size");
 
 		String imgName;
 		imgName = getTextValue(data, "img");
-		// Images.load(imgName, EXT.NONE);
-
+		
+		PhysicsComponent physics = new PhysicsComponent();
+		
+		physics.setBounds(b);
+		
+		GraphicsComponent graphics = new GraphicsComponent();
+		
+		graphics.setWidth(width);
+		graphics.setHeight(height);
+		
+		Animation a = new Animation(0, false);
+		a.addImage(imgName);
+		graphics.addAnimation("default", a);
+				
 		switch (type) {
 		case "Player":
-			Player p = new Player();
-
-			PlayerStats ps = new PlayerStats();
-
+			Player p = new Player(physics, graphics, new InteractComponent(), new AttackComponent(), new NPCInput());
+			
+			p.getAttack().setHealth(health);
+			p.getAttack().setMana(mana);
+			
+			Stats ps = new Stats();
+			
 			p.setType(type);
-			ps.attk = attk;
+			ps.attack = attack;
 			ps.def = def;
 			ps.speed = speed;
 			ps.health = health;
 			ps.moveSpeed = moveSpeed;
 			ps.mana = mana;
 
-			p.setImage(imgName);
-
 			p.setStats(ps);
-			p.setHealth(health);
+			
 			p.setName(name);
-
-			p.setWidth(width);
-			p.setHeight(height);
-
-			p.setBounds(new Bounds(bx, by, bw, bh));
 
 			TypeMaker.addPlayer(id, p);
 
 			return p;
 		case "Container":
-			Container b = new Container(size);
-			b.id = id;
-			b.setImage(imgName);
-			TypeMaker.addContainer(id, b);
-			return b;
+			Container container = new Container(physics, graphics, size);
+			
+			TypeMaker.addContainer(id, container);
+			return container;
 		case "Item":
-			Item i = new Item();
-			ItemStats is = new ItemStats();
+			Item i = new Item(physics, graphics, new ItemInteract());
+			
+			Stats is = new Stats();
 
 			i.setType(type);
 			is.size = size;
-			is.attk = attk;
+			is.attack = attack;
 			is.def = def;
 			is.speed = speed;
 			is.health = health;
 			is.moveSpeed = moveSpeed;
 			is.mana = mana;
-			i.setImage(imgName);
 
 			i.setStats(is);
 
-			i.setWidth(width);
-			i.setHeight(height);
-
-			i.setBounds(new Bounds(bx, by, bw, bh));
 			i.setName(name);
 			TypeMaker.addItem(id, i);
 			return i;
 		case "Prop":
-			Prop prop = new Prop();
-
+			Prop prop = new Prop(physics, graphics, new InteractComponent());
+			
 			prop.setType(type);
-
-			prop.setImage(imgName);
-
-			prop.setWidth(width);
-			prop.setHeight(height);
-
-			prop.setBounds(new Bounds(bx, by, bw, bh));
 			prop.setName(name);
 
 			TypeMaker.addProp(id, prop);
 			return prop;
 		case "Decoration":
-			Decoration decor = new Decoration();
+			Decoration decor = new Decoration(physics, graphics);
 
 			decor.setType(type);
 
-			decor.setImage(imgName);
-
-			decor.setWidth(width);
-			decor.setHeight(height);
-
-			decor.setBounds(new Bounds(bx, by, bw, bh));
 			decor.setName(name);
 
 			TypeMaker.addDecoration(id, decor);

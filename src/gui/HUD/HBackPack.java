@@ -39,7 +39,7 @@ public class HBackPack extends HElement {
 			Rectangle r = new Rectangle(x + (zx * nWidth), y + (zy * nHeight),
 					nWidth, nHeight);
 			if (HUD.isWithin(p, r)) {
-				player.dropItem(i);
+				player.getContainer().dropItem(i);
 				return;
 			}
 			zx++;
@@ -75,8 +75,8 @@ public class HBackPack extends HElement {
 		for (Item i : b.getItems()) {
 			int nWidth = 20;
 			int nHeight = 20;
-			g.drawImage(i.getImage(), x + (zx * nWidth), y + (zy * nHeight),
-					nWidth, nHeight, null);
+			g.drawImage(i.getGraphics().getImage(), x + (zx * nWidth), y
+					+ (zy * nHeight), nWidth, nHeight, null);
 			zx++;
 			if (zx * nWidth >= width) {
 				zx = 0;
