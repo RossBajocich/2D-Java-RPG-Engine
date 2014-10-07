@@ -8,9 +8,11 @@ public class PlayerGraphics extends GraphicsComponent {
 		super();
 	}
 
-	public void update(){
-		if (modify.getPhysics().getDirection() != Direction.DOWN) {
-			switch (modify.getPhysics().getDirection()) {
+	public void update() {
+		if (((PhysicsComponent) modify.get(PhysicsComponent.class))
+				.getDirection() != Direction.DOWN) {
+			switch (((PhysicsComponent) modify.get(PhysicsComponent.class))
+					.getDirection()) {
 			case DOWN:
 				setCurrentAnimation("down_walk");
 				break;
@@ -29,5 +31,5 @@ public class PlayerGraphics extends GraphicsComponent {
 			}
 		}
 	}
-	
+
 }

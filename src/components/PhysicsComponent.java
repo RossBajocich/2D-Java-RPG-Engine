@@ -5,8 +5,6 @@ import game.Level;
 import game.Position;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
 
 import loaders.Bounds;
 import characters.Player;
@@ -17,8 +15,6 @@ public class PhysicsComponent extends Component {
 		UP, LEFT, RIGHT, DOWN
 	}
 
-	private List<Position> collision_overflow = new ArrayList<Position>();
-	private Level level;
 	private Bounds bounds;
 	private double x, y;
 	private Direction dir;
@@ -39,6 +35,8 @@ public class PhysicsComponent extends Component {
 		} else {
 			change = 1.0;
 		}
+		
+		Level level = modify.getLevel();
 
 		switch (dir) {
 		case UP:
@@ -66,28 +64,24 @@ public class PhysicsComponent extends Component {
 		}
 	}
 
-	public boolean collide(PhysicsComponent p) {
-		return bounds.intersects(p.getBounds());
+	public Rectangle getBoundsRect(double x_move, double y_move) {
+		return bounds.getRect((int) (x + x_move), (int) (y + y_move));
 	}
 
-	public Rectangle getBounds(double x_move, double y_move) {
-		return bounds.getBounds((int) (x + x_move), (int) (y + y_move));
+	public Rectangle getBoundsRect() {
+		return bounds.getRect((int) x, (int) y);
 	}
 
-	public Rectangle getBounds() {
-		return bounds.getBounds((int) x, (int) y);
+	public Bounds getBounds() {
+		return bounds;
 	}
 
 	public double getDistance(Member e) {
 		if (e != null) {
-			return Math.sqrt(Math.pow(x - e.getPhysics().getX(), 2)
-					+ Math.pow(y - e.getPhysics().getY(), 2));
+			return Math.sqrt(Math.pow(x - ((PhysicsComponent)e.get(PhysicsComponent.class)).getX(), 2)
+					+ Math.pow(y - ((PhysicsComponent)e.get(PhysicsComponent.class)).getY(), 2));
 		}
 		return 0;
-	}
-
-	public void setLevel(Level l) {
-		this.level = l;
 	}
 
 	public void setX(double x) {
@@ -110,8 +104,8 @@ public class PhysicsComponent extends Component {
 		return new Position(x, y);
 	}
 
-	public void setBounds(Bounds r) {
-		bounds = r;
+	public void setBounds(Bounds b) {
+		bounds = b;
 	}
 
 	public Direction getDirection() {

@@ -52,9 +52,16 @@ public class Container extends Member {
 	public void dropItem(Item key) {
 		Random r = new Random();
 
+		PhysicsComponent physics = (PhysicsComponent) components
+				.get(PhysicsComponent.class);
+		GraphicsComponent graphics = (GraphicsComponent) components
+				.get(GraphicsComponent.class);
+
 		// Not correct, need to fix this to use the players values
-		key.getPhysics().setX(physics.getX() + r.nextInt(graphics.getWidth()));
-		key.getPhysics().setY(physics.getY() + r.nextInt(graphics.getHeight()));
+		((PhysicsComponent) key.get(PhysicsComponent.class)).setX(physics
+				.getX() + r.nextInt(graphics.getWidth()));
+		((PhysicsComponent) key.get(PhysicsComponent.class)).setY(physics
+				.getY() + r.nextInt(graphics.getHeight()));
 
 		level.addMember(key);
 
@@ -97,7 +104,7 @@ public class Container extends Member {
 
 	@Override
 	public Member clone() {
-		Container c = new Container(physics, graphics, count);
+		Container c = new Container(null, null, count);
 		for (Item i : items) {
 			c.addItem(i);
 		}

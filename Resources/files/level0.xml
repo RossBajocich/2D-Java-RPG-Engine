@@ -3,7 +3,10 @@
 	<Member type="Player">
 		<name>Ross</name>
 		<id>0</id>
-		<bound>50x50</bound>
+		<bx>0</bx>
+		<by>10</by>
+		<bw>50</bw>
+		<bh>40</bh>
 		<img>human.png</img>
 		<health>100</health>
 		<mana>10</mana>
@@ -17,7 +20,10 @@
 	<Member type="Player">
 		<name>Orc</name>
 		<id>1</id>
-		<bound>50x50</bound>
+		<bx>0</bx>
+		<by>10</by>
+		<bw>50</bw>
+		<bh>40</bh>
 		<img>ogre.png</img>
 		<health>100</health>
 		<mana>10</mana>
@@ -31,7 +37,7 @@
 	<Member type="Item">
 		<id>0</id>
 		<attack>10</attack>
-		<bound>10x10</bound>
+		<bounds>10x10</bounds>
 		<img>sword.png</img>
 		<width>10</width>
 		<height>10</height>
@@ -40,7 +46,7 @@
 	<Member type="Item">
 		<id>1</id>
 		<def>10</def>
-		<bound>10x10</bound>
+		<bounds>10x10</bounds>
 		<img>shield.png</img>
 		<parent>0</parent>
 		<size>1</size>
@@ -48,6 +54,7 @@
 	<Member type = "Container">
 		<id>0</id>
 		<size>10</size>
+		<bounds>10x10</bounds>
 		<img>backpack.png</img>
 	</Member>
 </Members>

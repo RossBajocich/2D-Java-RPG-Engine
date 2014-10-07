@@ -1,6 +1,6 @@
 package gui.HUD;
 
-import gui.BufferedScreen;
+import gui.Screen;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -23,13 +23,13 @@ public class HInfoText extends HElement {
 	}
 
 	@Override
-	public void draw(BufferedScreen s) {
+	public void draw(Screen s) {
 		int h = 18;
-		
+
 		Graphics g = s.getGraphics();
-		
+
 		g.drawImage(image, x, y, width, height, null);
-		
+
 		g.setColor(Color.BLACK);
 		g.setFont(new Font(Font.SERIF, Font.PLAIN, h));
 		int ty = 1;

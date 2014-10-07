@@ -144,7 +144,7 @@ public class XmlParser {
 
 		Bounds b;
 
-		if (getTextValue(data, "bound") == null) {
+		if (getTextValue(data, "bounds") == null) {
 			bx = getIntValue(data, "bx");
 			by = getIntValue(data, "by");
 
@@ -152,7 +152,7 @@ public class XmlParser {
 			bh = getIntValue(data, "bh");
 			b = new Bounds(bx, by, bw, bh);
 		} else {
-			bs = getTextValue(data, "bound");
+			bs = getTextValue(data, "bounds");
 			b = bounds.get(bs.trim());
 		}
 
@@ -187,8 +187,8 @@ public class XmlParser {
 		case "Player":
 			Player p = new Player(physics, graphics, new InteractComponent(), new AttackComponent(), new NPCInput());
 			
-			p.getAttack().setHealth(health);
-			p.getAttack().setMana(mana);
+			((AttackComponent) p.get(AttackComponent.class)).setHealth(health);
+			((AttackComponent) p.get(AttackComponent.class)).setMana(mana);
 			
 			Stats ps = new Stats();
 			

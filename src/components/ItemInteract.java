@@ -32,7 +32,7 @@ public class ItemInteract extends InteractComponent {
 				&& p.getContainer().getTotal() + i.getStats().size <= p
 						.getContainer().getSize()) {
 			p.getContainer().addItem(i);
-			i.remove();
+			i.getLevel().remove(i);
 		}
 	}
 

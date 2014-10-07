@@ -20,7 +20,6 @@ public class VolatileScreen extends Screen {
 		graphics = img.getGraphics();
 		graphics.setColor(Color.RED);
 		graphics.fillRect(0, 0, width, height);
-		graphics.drawImage(bg, 0, 0, null);
 	}
 	
 	public VolatileImage getImage() {

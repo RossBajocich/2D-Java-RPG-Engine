@@ -29,8 +29,8 @@ public class Clock {
 		return t;
 	}
 	
-	public static Timer createTimer(long ms, Functor f, Object o){
-		Timer t = new Timer(ms,f,o);
+	public static Timer createTimer(long ms, Functor f){
+		Timer t = new Timer(ms,f);
 		timers.add(t);
 		return t;
 	}

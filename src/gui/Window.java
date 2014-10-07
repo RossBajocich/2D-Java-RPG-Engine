@@ -31,7 +31,7 @@ public class Window extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		Window w = new Window("Game", 600, 600);
+		Window w = new Window("Game", 500, 500);
 		game = new Game(rm, m);
 		gameLoop = new GameLoop(game);
 		m = new Mouse(game);

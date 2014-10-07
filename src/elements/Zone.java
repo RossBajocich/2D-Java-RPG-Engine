@@ -20,7 +20,7 @@ public class Zone extends Member {
 	}
 
 	public void onCollide(Player p) {
-		if (p.getPhysics().getBounds().intersects(physics.getBounds())) {
+		if(((PhysicsComponent)p.get(PhysicsComponent.class)).getBounds().intersects(((PhysicsComponent)p.get(PhysicsComponent.class)), 0,0)){
 			if (inside.contains(p)) {
 				onEntry(p);
 			} else {

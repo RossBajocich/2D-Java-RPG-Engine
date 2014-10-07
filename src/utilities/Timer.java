@@ -4,17 +4,15 @@ package utilities;
 public class Timer {
 	private long start, end, delay;
 	private Functor f;
-	private Object o;
 	private boolean done = false;
 
 	public Timer(long ms) {
 		set(ms);
 	}
 
-	public Timer(long ms, Functor f, Object o) {
+	public Timer(long ms, Functor f) {
 		set(ms);
 		this.f = f;
-		this.o = o;
 	}
 
 	private void set(long ms) {
@@ -24,11 +22,10 @@ public class Timer {
 	}
 
 	public void update() {
-		if (f != null && o != null) {
+		if (f != null) {
 			if (System.currentTimeMillis() > end) {
-				f.execute(o);
+				f.execute();
 				f = null;
-				o = null;
 				done  = true;
 			}
 		}

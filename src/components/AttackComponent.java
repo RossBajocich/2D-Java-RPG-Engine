@@ -3,6 +3,8 @@ package components;
 import java.util.Random;
 
 import utilities.Clock;
+import utilities.Console;
+import utilities.Console.in;
 import utilities.Functor;
 import utilities.Stats;
 import characters.Player;
@@ -14,7 +16,7 @@ public class AttackComponent extends Component {
 	private int health, mana;
 	private long lastAttack = 0;
 	private boolean dead;
-	private static double attackDistance = 75;
+	private double attackDistance = 75;
 
 	public AttackComponent() {
 		super();
@@ -45,10 +47,16 @@ public class AttackComponent extends Component {
 		Clock.createTimer(2000, new Functor() {
 			@Override
 			public void execute(Object o) {
-				((Player) o).getContainer().dropItems();
-				((Member) o).remove();
 			}
-		}, this);
+
+			@Override
+			public void execute() {
+				if (((Player) modify).getContainer() != null) {
+					((Player) modify).getContainer().dropItems();
+				}
+				((Member) modify).getLevel().remove(modify);
+			}
+		});
 	}
 
 	public boolean isDead() {
@@ -79,16 +87,30 @@ public class AttackComponent extends Component {
 		return stats.health;
 	}
 
-	public void attack() {
+	public boolean attack() {
 		// get closest player or whatever and call attack() on it
+		for (Member p : modify.getLevel().getElements()) {
+			if (p.getType().equalsIgnoreCase("player")) {
+				if (((Player) p).get(AttackComponent.class) == this) {
+					continue;
+				}
+				if (((PhysicsComponent) modify.get(PhysicsComponent.class)).getDistance(p) < this.attackDistance) {
+					// Should i call onAttack() here? Or inside attack()?
+					attack((Player) p);
+					((AttackComponent) ((Player) p).get(AttackComponent.class)).onAttack(this);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public void attack(Player p) {
-		// TODO Auto-generated method stub
+		Console.log("THis player attacked " + p.getName(), in.INFO);
 		if (dead) {
 			return;
 		}
-		if (!p.getAttack().isDead()) {
+		if (!((AttackComponent) p.get(AttackComponent.class)).isDead()) {
 			// TODO: make this check a timer...
 			if ((System.currentTimeMillis() - lastAttack) > stats.speed * 1000) {
 				// TODO: make this "miss" code better
@@ -104,7 +126,7 @@ public class AttackComponent extends Component {
 					if (atk < 0) {
 						atk = 0;
 					}
-					p.getAttack().addHealth(-1 * atk);
+					((AttackComponent) p.get(AttackComponent.class)).addHealth(-1 * atk);
 				}
 				lastAttack = System.currentTimeMillis();
 			}
@@ -112,7 +134,7 @@ public class AttackComponent extends Component {
 
 	}
 
-	public void onAttack(Player p) {
+	public void onAttack(AttackComponent p) {
 		if (!dead) {
 			// attack(p);
 		}

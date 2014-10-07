@@ -3,7 +3,9 @@ package elements;
 import game.Level;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import components.Component;
 import components.GraphicsComponent;
@@ -14,37 +16,50 @@ public abstract class Member {
 	protected String name, type;
 
 	protected Level level;
-	protected List<Component> components = new ArrayList<Component>();
-	protected GraphicsComponent graphics;
-	protected PhysicsComponent physics;
+	protected Map<Class<? extends Component>, Component> components = new HashMap<>();
 
 	public Member(PhysicsComponent physics, GraphicsComponent graphics) {
-		this.physics = physics;
-		this.graphics = graphics;
 		physics.setModify(this);
 		graphics.setModify(this);
-		components.add(physics);
-		components.add(graphics);
+		components.put(PhysicsComponent.class, physics);
+		components.put(GraphicsComponent.class, graphics);
 	}
 
 	public Member() {
 	}
 
+	/*
+	 * Only to be used for looping through components to call abstract function
+	 * update() on each
+	 */
 	public List<Component> getComponents() {
-		return components;
+		List<Component> temp = new ArrayList<Component>(components.values());
+		return temp;
+	}
+
+	public <T extends Component> T get(Class<? extends Component> clazz) {
+		return (T) clazz.cast(components.get(clazz));
+	}
+
+	public void set(Component c) {
+		components.put(c.getClass(), c);
+		c.setModify(this);
+	}
+
+	public void setLevel(Level l) {
+		this.level = l;
+	}
+
+	public Level getLevel() {
+		return level;
 	}
 
 	public abstract Member clone();
 
 	public void update() {
-		for (Component c : components) {
+		for (Component c : components.values()) {
 			c.update();
 		}
-	}
-
-	public void remove() {
-		this.name = null;
-		level.remove(this);
 	}
 
 	public String getName() {
@@ -63,25 +78,13 @@ public abstract class Member {
 		return type;
 	}
 
-	public GraphicsComponent getGraphics() {
-		return graphics;
-	}
-
-	public PhysicsComponent getPhysics() {
-		return physics;
-	}
-
-	public void setPhysics(PhysicsComponent physics) {
-		this.physics = physics;
-	}
-
-	public void setGraphics(GraphicsComponent graphics) {
-		this.graphics = graphics;
-	}
-
 	public void copy(Member m) {
-		m.graphics = this.graphics;
-		m.physics = this.physics;
+		m.components.putAll(this.components);
+		
+		for(Component c : m.components.values()){
+			c.setModify(m);
+		}
+		
 		m.type = this.type;
 		m.name = this.name;
 		m.level = this.level;

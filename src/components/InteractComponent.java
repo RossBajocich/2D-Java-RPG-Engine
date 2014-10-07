@@ -23,6 +23,7 @@ public class InteractComponent extends Component {
 
 	public void interact(){
 		//get closest InteractComponent and interact with it
+		
 	}
 	
 	/*

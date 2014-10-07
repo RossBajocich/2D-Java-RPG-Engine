@@ -45,7 +45,7 @@ public class Images {
 		}
 	}
 
-	public static void add(BufferedImage b, String id) {
+	public static void set(BufferedImage b, String id) {
 		if (!images.containsValue(b)) {
 			images.put(id, b);
 		}

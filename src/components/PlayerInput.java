@@ -2,24 +2,21 @@ package components;
 
 import java.awt.event.KeyEvent;
 
-import components.PhysicsComponent.Direction;
-
 import utilities.Console;
 import utilities.Keyboard;
-import utilities.Console.in;
 import characters.Player;
+
+import components.PhysicsComponent.Direction;
+
 import elements.Member;
 
 public class PlayerInput extends InputComponent {
-
-	Player player;
-
 	public PlayerInput() {
 		super();
 	}
 
 	public void setModify(Member m) {
-		this.modify = (Player) m;
+		this.modify = m;
 		if (!(m instanceof Player)) {
 			Console.log("Cannot have non player modifier for PlayerInput!",
 					Console.in.ERROR);
@@ -27,28 +24,45 @@ public class PlayerInput extends InputComponent {
 	}
 
 	public void update() {
+		boolean isMoving = false;
 		if (Keyboard.getKey(KeyEvent.VK_W)) {
-			modify.getPhysics().move(Direction.UP);
-			modify.getGraphics().setCurrentAnimation("up_walk");
+			((PhysicsComponent) modify.get(PhysicsComponent.class))
+					.move(Direction.UP);
+			((GraphicsComponent) modify.get(GraphicsComponent.class))
+					.setCurrentAnimation("up_walk");
+			isMoving = true;
 		}
 		if (Keyboard.getKey(KeyEvent.VK_S)) {
-			modify.getPhysics().move(Direction.DOWN);
-			modify.getGraphics().setCurrentAnimation("down_walk");
+			((PhysicsComponent) modify.get(PhysicsComponent.class))
+					.move(Direction.DOWN);
+			((GraphicsComponent) modify.get(GraphicsComponent.class))
+					.setCurrentAnimation("down_walk");
+			isMoving = true;
 		}
 		if (Keyboard.getKey(KeyEvent.VK_A)) {
-			modify.getPhysics().move(Direction.LEFT);
-			modify.getGraphics().setCurrentAnimation("left_walk");
+			((PhysicsComponent) modify.get(PhysicsComponent.class))
+					.move(Direction.LEFT);
+			((GraphicsComponent) modify.get(GraphicsComponent.class))
+					.setCurrentAnimation("left_walk");
+			isMoving = true;
 		}
 		if (Keyboard.getKey(KeyEvent.VK_D)) {
-			modify.getPhysics().move(Direction.RIGHT);
-			modify.getGraphics().setCurrentAnimation("right_walk");
+			((PhysicsComponent) modify.get(PhysicsComponent.class))
+					.move(Direction.RIGHT);
+			((GraphicsComponent) modify.get(GraphicsComponent.class))
+					.setCurrentAnimation("right_walk");
+			isMoving = true;
 		}
+		((GraphicsComponent) modify.get(GraphicsComponent.class))
+				.getCurrentAnimation().setRunning(isMoving);
 
 		if (Keyboard.getKey(KeyEvent.VK_F)) {
-			((Player) modify).getAttack().attack();
+			((AttackComponent) ((Player) modify).get(AttackComponent.class))
+					.attack();
 		}
 		if (Keyboard.getKey(KeyEvent.VK_I)) {
-			((Player) player).getInteract().interact();
+			((InteractComponent) ((Player) modify).get(InteractComponent.class))
+					.interact();
 		}
 	}
 }

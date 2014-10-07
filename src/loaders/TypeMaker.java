@@ -5,9 +5,15 @@ import items.Item;
 
 import java.util.HashMap;
 
+import characters.Player;
+
+import components.AttackComponent;
+import components.GraphicsComponent;
+import components.InputComponent;
+import components.InteractComponent;
+import components.PhysicsComponent;
 import components.PlayerInput;
 
-import characters.Player;
 import elements.Decoration;
 import elements.Member;
 import elements.Prop;
@@ -52,17 +58,21 @@ public class TypeMaker {
 			break;
 		case "player":
 			Player t = players.get(id);
-			Player p = new Player(t.getPhysics(), t.getGraphics(),
-					t.getInteract(), t.getAttack(), t.getInput());
+			Player p = new Player(
+					((PhysicsComponent) t.get(PhysicsComponent.class)),
+					((GraphicsComponent) t.get(GraphicsComponent.class)),
+					((InteractComponent) t.get(InteractComponent.class)),
+					((AttackComponent) t.get(AttackComponent.class)),
+					((InputComponent) t.get(InputComponent.class)));
 			if (ed.mainPlayer) {
 				ed.level.setMainPlayer(p);
 				p.setMainPlayer(ed.mainPlayer);
-				p.setInput(new PlayerInput());
+				p.set(new PlayerInput());
 			}
 
 			t.copy(p);
 			p.setName(ed.name);
-			
+
 			e = p;
 			break;
 		case "item":
@@ -75,9 +85,9 @@ public class TypeMaker {
 			return null;
 		}
 
-		e.getPhysics().setX(x);
-		e.getPhysics().setY(y);
-		e.getPhysics().setLevel(ed.level);
+		((PhysicsComponent) e.get(PhysicsComponent.class)).setX(x);
+		((PhysicsComponent) e.get(PhysicsComponent.class)).setY(y);
+		e.setLevel(ed.level);
 
 		return e;
 	}

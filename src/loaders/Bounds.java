@@ -2,28 +2,34 @@ package loaders;
 
 import java.awt.Rectangle;
 
+import components.PhysicsComponent;
+
 public class Bounds {
 	Rectangle rect;
-	
+
 	// add shape support
-	public Bounds(int bw, int bh, int bx, int by) {
-		rect = new Rectangle(bx,by,bw,bh);
+	public Bounds(int bx, int by, int bw, int bh) {
+		rect = new Rectangle(bx, by, bw, bh);
 	}
 
 	public Bounds(int bw, int bh) {
-		rect = new Rectangle(0,0,bw,bh);
+		rect = new Rectangle(0, 0, bw, bh);
 	}
 
-	public Rectangle getBounds() {
+	public Rectangle getRect() {
 		return rect;
 	}
-	
-	public Rectangle getBounds(int xOffset, int yOffset) {
-		return new Rectangle(xOffset + rect.x, yOffset + rect.y, rect.width, rect.height);
+
+	public Rectangle getRect(int xOffset, int yOffset) {
+		return new Rectangle(xOffset + rect.x, yOffset + rect.y, rect.width,
+				rect.height);
 	}
 
-	public boolean intersects(Rectangle bounds) {
-		// TODO Auto-generated method stub
-		return rect.intersects(bounds.getBounds());
+	/*
+	 * Argument p = the object checking against, uses the x and y in getBounds()
+	 * for offsets. Argument x,y = the new x & y of this bounds object
+	 */
+	public boolean intersects(PhysicsComponent p, int x, int y) {
+		return p.getBoundsRect().intersects(this.getRect(x, y));
 	}
 }

@@ -1,6 +1,6 @@
 package gui.HUD;
 
-import gui.BufferedScreen;
+import gui.Screen;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -28,7 +28,7 @@ public abstract class HElement {
 		return new Rectangle(x, y, width, height);
 	}
 
-	public abstract void draw(BufferedScreen s);
+	public abstract void draw(Screen s);
 
 	public BufferedImage getImage() {
 		return image;

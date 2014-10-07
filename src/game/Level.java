@@ -2,6 +2,7 @@ package game;
 
 import items.Item;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -13,6 +14,7 @@ import utilities.Console.in;
 import utilities.Images;
 import characters.Player;
 
+import components.GraphicsComponent;
 import components.PhysicsComponent;
 
 import elements.Decoration;
@@ -26,9 +28,8 @@ public class Level {
 	EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
 			RenderLayer.class);
 
-	List<Player> players = new ArrayList<Player>();
 	List<Member> elements = new ArrayList<Member>();
-	List<PhysicsComponent> moved = new ArrayList<PhysicsComponent>();
+	// List<PhysicsComponent> moved = new ArrayList<PhysicsComponent>();
 	private Player mainPlayer;
 
 	public enum RenderLayer {
@@ -52,14 +53,32 @@ public class Level {
 	 * any that have a PhysicsComponent
 	 */
 	public boolean tryMove(PhysicsComponent p, double x_move, double y_move) {
-		if (p.getX() + x_move < 0 || p.getX() + p.getBounds().width >= width
-				|| p.getY() + y_move < 0 || p.getY() + y_move > height) {
+		int left = p.getBoundsRect(x_move, 0).x;
+		int top = p.getBoundsRect(0, y_move).y;
+		int right = left + p.getBoundsRect(x_move, 0).width;
+		int bottom = top + p.getBoundsRect(0, y_move).height;
+
+		if (left < 0 || top < 0 || right > width || bottom > height) {
+			Console.log("running into the wall! x= " + left + " y= " + top
+					+ " right = " + right + " bottom= " + bottom
+					+ " lvlwidth= " + width + " lvlheight= " + height, in.INFO);
 			return false;
 		}
 		for (Member m : elements) {
-			if (m.getPhysics().getBounds() != null) {
-				if (m.getPhysics().getBounds(x_move, y_move)
-						.intersects(p.getBounds())) {
+			if (((PhysicsComponent) m.get(PhysicsComponent.class)).getBounds() != null
+					&& m.get(PhysicsComponent.class) != p) {
+				if (p.getBounds().intersects(
+						(PhysicsComponent) m.get(PhysicsComponent.class),
+						(int) x_move, (int) y_move)) {
+					Rectangle r1 = p.getBoundsRect(x_move, y_move);
+					Rectangle r2 = ((PhysicsComponent) m
+							.get(PhysicsComponent.class)).getBoundsRect();
+					System.out.printf(
+							"Collision player, x1:%d, y1:%d, w1:%d, h1:%d\n",
+							r1.x, r1.y, r1.width + r1.x, r1.y + r1.height);
+					System.out.printf(
+							"Collision member, x2:%d, y2:%d, w2:%d, h2:%d\n",
+							r2.x, r2.y, r2.width + r2.x, r2.y + r2.height);
 					return false;
 				}
 			}
@@ -83,16 +102,7 @@ public class Level {
 		return height;
 	}
 
-	public boolean isWithin(View v) {
-		return (this.width >= v.getX() && this.width <= v.getX() + v.getWidth()
-				&& this.height >= v.getY() && this.height <= v.getY()
-				+ v.getHeight());
-	}
-
 	public BufferedImage getBackground() {
-		if (bg == null) {
-			throw new NullPointerException("Background image is null!");
-		}
 		return Images.get(bg);
 	}
 
@@ -103,22 +113,19 @@ public class Level {
 	public void addMember(Member e) {
 		if (!elements.contains(e)) {
 			elements.add(e);
-		}
-
-		if (e.getGraphics() != null) {
-			// TODO: remove this, very useless
-			if (e instanceof Decoration) {
-				addRender(RenderLayer.DECORATION, e);
-			} else if (e instanceof Item) {
-				addRender(RenderLayer.ITEM, e);
+			if (e.get(GraphicsComponent.class) != null) {
+				// TODO: remove this, very useless
+				if (e instanceof Decoration) {
+					addRender(RenderLayer.DECORATION, e);
+				} else if (e instanceof Item) {
+					addRender(RenderLayer.ITEM, e);
+				} else {
+					addRender(RenderLayer.MAIN, e);
+				}
 			} else {
-				addRender(RenderLayer.MAIN, e);
+				Console.log("Not a valid object @ level -> addMember()",
+						in.ERROR);
 			}
-		} else {
-			Console.log("Not a valid object @ level -> addMember()", in.ERROR);
-		}
-		if (e instanceof Player) {
-			players.add((Player) e);
 		}
 	}
 
@@ -151,7 +158,7 @@ public class Level {
 		return renders;
 	}
 
-	public List<Member> getSorted(List<Member> old) {
+	private List<Member> getSorted(List<Member> old) {
 		return sort(old);
 	}
 
@@ -159,29 +166,20 @@ public class Level {
 		TreeMap<Integer, Member> vals = new TreeMap<Integer, Member>();
 
 		for (Member r : in) {
-			PhysicsComponent p = r.getPhysics();
-			if (!vals
-					.containsKey((int) (p.getY() + r.getGraphics().getHeight()))) {
-				vals.put((int) (p.getY() + r.getGraphics().getHeight()), r);
+			PhysicsComponent p = r.get(PhysicsComponent.class);
+			if (!vals.containsKey((int) (p.getY() + ((GraphicsComponent) r
+					.get(GraphicsComponent.class)).getHeight()))) {
+				vals.put((int) (p.getY() + ((GraphicsComponent) r
+						.get(GraphicsComponent.class)).getHeight()), r);
 			} else {
-				vals.put((int) (p.getY() + r.getGraphics().getHeight() + 1), r);
+				vals.put(
+						(int) (p.getY()
+								+ ((GraphicsComponent) r
+										.get(GraphicsComponent.class))
+										.getHeight() + 1), r);
 			}
 		}
 		return new ArrayList<Member>(vals.values());
-	}
-
-	public List<Member> getVisible(View v) {
-		// NOT USED WTF YOURE STUPID
-		List<Member> out = new ArrayList<Member>();
-		for (List<Member> r : renders.values()) {
-			for (Member real : r) {
-				if (real.getGraphics().isWithin(v)) {
-					out.add(real);
-				}
-			}
-		}
-		Console.log("getvisible?", in.INFO);
-		return getSorted(out);
 	}
 
 	public void setBackground(String data) {
@@ -190,7 +188,18 @@ public class Level {
 		} else {
 			Images.load(data, Images.EXT.JPG);
 		}
+
 		bg = data;
+
+		if (Images.get(bg).getWidth() != width
+				|| Images.get(bg).getHeight() != height) {
+			BufferedImage original = Images.get(bg);
+
+			BufferedImage f = new BufferedImage(width, height,
+					BufferedImage.TYPE_INT_ARGB);
+			f.getGraphics().drawImage(original, 0, 0, width, height, null);
+			Images.set(f, bg);
+		}
 	}
 
 	public Player getMainPlayer() {
@@ -207,46 +216,23 @@ public class Level {
 			p.update();
 		}
 
-		if (!moved.isEmpty()) {
-			if (renders.containsKey(RenderLayer.MAIN)) {
-				List<Member> old = new ArrayList<Member>(
-						renders.get(RenderLayer.MAIN));
-				renders.put(RenderLayer.MAIN, getSorted(old));
-			}
+		if (renders.containsKey(RenderLayer.MAIN)) {
+			List<Member> old = new ArrayList<Member>(
+					renders.get(RenderLayer.MAIN));
+			renders.put(RenderLayer.MAIN, getSorted(old));
 		}
-		moved.clear();
+
 	}
 
-	public boolean attack(Player sender) {
-		for (Player p : players) {
-			if (sender == p) {
-				continue;
-			}
-			if (sender.getPhysics().getDistance(p) < sender.getAttack()
-					.getAttackDistance()) {
-				// Should i call onAttack() here? Or inside attack()?
-				sender.getAttack().attack(p);
-				return true;
-			}
-		}
+	public boolean attackRequest(Player sender) {
+
 		return false;
-	}
-
-	public void notifyMove(PhysicsComponent physicsComponent) {
-		if (!moved.contains(physicsComponent)) {
-			moved.add(physicsComponent);
-		}
 	}
 
 	public void remove(Member e) {
 		// TODO: synchonize dis function
 		elements.remove(e);
 		removeRender(e);
-	}
-
-	public List<Player> getPlayers() {
-		// TODO Auto-generated method stub
-		return players;
 	}
 
 	public void setMainPlayer(Player p) {

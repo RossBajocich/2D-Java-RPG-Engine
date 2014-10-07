@@ -29,7 +29,7 @@ public class Item extends Member {
 
 	@Override
 	public Member clone() {
-		Item i = new Item(physics, graphics, interact);
+		Item i = new Item(null, null, interact);
 		i.stats = stats;
 		i.name = name;
 		i.type = type;

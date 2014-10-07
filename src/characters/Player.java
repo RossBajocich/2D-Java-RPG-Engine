@@ -17,34 +17,25 @@ import elements.Member;
 public class Player extends Member {
 	protected boolean mainPlayer = false;
 	protected Container container;
-
-	protected AttackComponent attack;
-	protected InputComponent input;
-	protected InteractComponent interact;
-
 	protected Stats stats;
 
 	public Player(PhysicsComponent physics, GraphicsComponent graphics,
 			InteractComponent interact, AttackComponent attack,
 			InputComponent input) {
 		super(physics, graphics);
-		this.interact = interact;
-		this.attack = attack;
-		this.input = input;
-		
+
 		input.setModify(this);
 		attack.setModify(this);
 		interact.setModify(this);
 
-		components.add(input);
-		components.add(attack);
-		components.add(interact);
+		components.put(InputComponent.class, input);
+		components.put(AttackComponent.class, attack);
+		components.put(InteractComponent.class, interact);
 		init();
 	}
 
 	public void init() {
 		Animation left_walk, right_walk, up_walk, down_walk;
-		// Animation left_stand, right_stand, up_stand, down_stand;
 		Animation die;
 
 		left_walk = ResourceLoader.getAnimationFromSheet("link_sheet.png", 59,
@@ -55,20 +46,12 @@ public class Player extends Member {
 				17, 24, "up_walk", 3, 0, 200, true);
 		down_walk = ResourceLoader.getAnimationFromSheet("link_sheet.png", 3,
 				89, 18, 24, "down_walk", 4, 1, 200, true);
-
-		/*
-		 * left_stand = ResourceLoader.getAnimationFromSheet("link_sheet.png",
-		 * 59, 2, 18, 24, "left_stand", 3, 200, true); right_stand =
-		 * ResourceLoader.getAnimationFromSheet("link_sheet.png", 59, 2, 18, 24,
-		 * "right_stand", 3, 200, true); up_stand =
-		 * ResourceLoader.getAnimationFromSheet("link_sheet.png", 59, 2, 18, 24,
-		 * "up_stand", 3, 200, true); left_stand =
-		 * ResourceLoader.getAnimationFromSheet("link_sheet.png", 59, 2, 18, 24,
-		 * "down_stand", 3, 200, true);
-		 */
-
+		
 		die = new Animation(1000, false);
 		die.addImage("dead.png");
+
+		GraphicsComponent graphics = (GraphicsComponent) components
+				.get(GraphicsComponent.class);
 
 		graphics.addAnimation("left_walk", left_walk);
 		graphics.addAnimation("right_walk", right_walk);
@@ -76,10 +59,20 @@ public class Player extends Member {
 		graphics.addAnimation("down_walk", down_walk);
 		graphics.addAnimation("die", die);
 
+		
+		
 		graphics.setCurrentAnimation("down_walk");
 	}
 
 	public void update() {
+		if (container != null) {
+			((PhysicsComponent) container.get(PhysicsComponent.class))
+					.setX(((PhysicsComponent) components
+							.get(PhysicsComponent.class)).getX());
+			((PhysicsComponent) container.get(PhysicsComponent.class))
+					.setY(((PhysicsComponent) components
+							.get(PhysicsComponent.class)).getY());
+		}
 		super.update();
 	}
 
@@ -89,14 +82,6 @@ public class Player extends Member {
 
 	public void setMainPlayer(boolean state) {
 		mainPlayer = state;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public void setContainer(Container b) {
@@ -115,7 +100,7 @@ public class Player extends Member {
 	public Stats getStats() {
 		Stats ps = new Stats(stats);
 		if (container != null) {
-			//Has a container at this point
+			// Has a container at this point
 			ps.add(container.getStats());
 		}
 		return ps;
@@ -126,53 +111,18 @@ public class Player extends Member {
 	}
 
 	public Member clone() {
-		Player p = new Player(physics, graphics, interact, attack, input);
+		// This is null because copy(Player p) copies all components through the
+		// super()
+		Player p = new Player(null, null, null, null, null);
 		copy(p);
 		return p;
 	}
 
 	public void copy(Player p) {
+
 		p.container = container;
 
 		p.stats = stats;
-		
-		p.interact = interact;
-		p.input = input;
-		p.attack = attack;
-
 		super.copy(p);
-	}
-
-	public AttackComponent getAttack() {
-		return attack;
-	}
-
-	public InputComponent getInput() {
-		return input;
-	}
-
-	public InteractComponent getInteract() {
-		return interact;
-	}
-
-	public void setAttack(AttackComponent attack) {
-		components.remove(attack);
-		this.attack = attack;
-		attack.setModify(this);
-		components.add(attack);
-	}
-
-	public void setInput(InputComponent input) {
-		components.remove(input);
-		this.input = input;
-		input.setModify(this);
-		components.add(input);
-	}
-
-	public void setInteract(InteractComponent interact) {
-		components.remove(interact);
-		this.interact = interact;
-		interact.setModify(this);
-		components.add(interact);
 	}
 }

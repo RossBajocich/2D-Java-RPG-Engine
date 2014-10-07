@@ -10,7 +10,7 @@ public class Decoration extends Member {
 
 	@Override
 	public Member clone() {
-		Decoration p = new Decoration(physics, graphics);
+		Decoration p = new Decoration(null, null);
 		super.copy(p);
 
 		return p;

@@ -4,20 +4,13 @@ import characters.Player;
 
 public class NPCAttack extends AttackComponent {
 
-	boolean attacked;
-	Player chasing;
-	
 	public NPCAttack() {
 		super();
 	}
 
-	public void onAttack(Player p){
-		attacked = true;
-		chasing = p;
+	public void onAttack(Player p) {
 		if (!isDead()) {
-			attack(p);
+			((NPCInput) modify.get(NPCInput.class)).setChasing(p);
 		}
 	}
-	
-	
 }

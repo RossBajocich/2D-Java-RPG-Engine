@@ -1,7 +1,7 @@
 package components;
 
-import game.View;
 import graphics.Animation;
+import graphics.ReferenceFrame;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -11,13 +11,13 @@ import utilities.Console.in;
 
 public class GraphicsComponent extends Component {
 
-	private HashMap<String, Animation> animations = new HashMap<String, Animation>();
-	private String current_anim = "default";
-	int width, height;
+	protected HashMap<String, Animation> animations = new HashMap<String, Animation>();
+	protected String current_anim = "default";
+	protected int width, height;
 
 	public GraphicsComponent() {
 		super();
-		setCurrentAnimation("defualt");
+		setCurrentAnimation("default");
 	}
 
 	public void setCurrentAnimation(String uuid) {
@@ -25,10 +25,10 @@ public class GraphicsComponent extends Component {
 			current_anim = uuid;
 		}
 	}
-	
-	public boolean isWithin(View v) {
-		PhysicsComponent p = modify.getPhysics();
-		
+
+	public boolean isWithin(ReferenceFrame v) {
+		PhysicsComponent p = modify.get(PhysicsComponent.class);
+
 		if (p == null) {
 			return false;
 		}
@@ -39,7 +39,7 @@ public class GraphicsComponent extends Component {
 	}
 
 	public boolean isOutside(int xx, int yy, int wwidth, int hheight) {
-		PhysicsComponent p = modify.getPhysics();
+		PhysicsComponent p = modify.get(PhysicsComponent.class);
 		return p.getX() + width < xx || p.getY() + height < yy
 				|| p.getX() > wwidth || p.getY() > hheight;
 	}
@@ -78,14 +78,11 @@ public class GraphicsComponent extends Component {
 
 	@Override
 	public void update() {
-		
+
 	}
 
 	public BufferedImage getImage() {
-		// TODO: make the index better, possible bug when two GraphicsComponents
-		// are using the same animation in the future, would modify eachother's
-		// index (currently its 1:1 however.)
-		return animations.get(current_anim).getNext();
+		return animations.get(current_anim).getImage();
 	}
 
 }

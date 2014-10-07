@@ -16,10 +16,9 @@ public class BufferedScreen extends Screen {
 
 	public void reset() {
 		graphics = img.getGraphics();
-		graphics.dispose();
-		//graphics.drawImage(bg, 0, 0, null);
+		//graphics.clearRect(x, y, width, height);
 	}
-	
+
 	public BufferedImage getImage() {
 		return (BufferedImage) img;
 	}

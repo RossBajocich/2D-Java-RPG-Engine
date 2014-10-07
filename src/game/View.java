@@ -1,18 +1,17 @@
 package game;
 
-import characters.Player;
+import components.PhysicsComponent;
 
-public class View {
+import elements.Member;
+import graphics.ReferenceFrame;
 
-	private int width, height, x, y, widthMax, heightMax;
-	private Player follow;
+public class View extends ReferenceFrame {
 
-	public View(int width, int height, int widthMax, int heightMax, Player p) {
-		this.width = width;
-		this.height = height;
+	private Member follow;
+
+	public View(int x, int y, int width, int height, Level current_level, Member p) {
+		super(x, y, width, height, current_level);
 		this.follow = p;
-		this.widthMax = widthMax;
-		this.heightMax = heightMax;
 	}
 
 	public int getX() {
@@ -30,21 +29,24 @@ public class View {
 		y = newY - height / 2;
 	}
 
-	public void center(Player p) {
+	public void center(Member p) {
 		follow = p;
 	}
 
 	public void update() {
-		int centerX = (int) (follow.getPhysics().getX() + (follow.getPhysics()
-				.getBounds().width / 2));
-		int centerY = (int) (follow.getPhysics().getY() + (follow.getPhysics()
-				.getBounds().height / 2));
+		int centerX = (int) (((PhysicsComponent) follow
+				.get(PhysicsComponent.class)).getX() + (((PhysicsComponent) follow
+				.get(PhysicsComponent.class)).getBoundsRect().width / 2));
+		int centerY = (int) (((PhysicsComponent) follow
+				.get(PhysicsComponent.class)).getY() + (((PhysicsComponent) follow
+				.get(PhysicsComponent.class)).getBoundsRect().height / 2));
 
-		if ((centerX - (width / 2) >= 0) && (centerX + (width / 2) < widthMax)) {
+		if ((centerX - (width / 2) >= 0)
+				&& (centerX + (width / 2) < current_level.getWidth())) {
 			x = (int) (centerX - (width / 2));
 		}
 		if ((centerY - (height / 2) >= 0)
-				&& (centerY + (height / 2) < heightMax)) {
+				&& (centerY + (height / 2) < current_level.getHeight())) {
 			y = (int) (centerY - (height / 2));
 		}
 	}

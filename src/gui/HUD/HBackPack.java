@@ -1,6 +1,6 @@
 package gui.HUD;
 
-import gui.BufferedScreen;
+import gui.Screen;
 import items.Container;
 import items.Item;
 
@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+
+import components.GraphicsComponent;
 
 import utilities.Console;
 import utilities.Console.in;
@@ -65,7 +67,7 @@ public class HBackPack extends HElement {
 	}
 
 	@Override
-	public void draw(BufferedScreen s) {
+	public void draw(Screen s) {
 		s.getGraphics().drawImage(image, x, y, width, height, null);
 		if (b == null) {
 			return;
@@ -75,8 +77,9 @@ public class HBackPack extends HElement {
 		for (Item i : b.getItems()) {
 			int nWidth = 20;
 			int nHeight = 20;
-			g.drawImage(i.getGraphics().getImage(), x + (zx * nWidth), y
-					+ (zy * nHeight), nWidth, nHeight, null);
+			g.drawImage(((GraphicsComponent) i.get(GraphicsComponent.class))
+					.getImage(), x + (zx * nWidth), y + (zy * nHeight), nWidth,
+					nHeight, null);
 			zx++;
 			if (zx * nWidth >= width) {
 				zx = 0;

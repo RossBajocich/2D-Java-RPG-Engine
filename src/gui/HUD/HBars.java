@@ -1,9 +1,11 @@
 package gui.HUD;
 
-import gui.BufferedScreen;
+import gui.Screen;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import components.AttackComponent;
 
 import characters.Player;
 
@@ -34,7 +36,7 @@ public class HBars extends HElement {
 	}
 
 	@Override
-	public void draw(BufferedScreen s) {
+	public void draw(Screen s) {
 		Graphics gMain = s.getGraphics();
 		if (p != null) {
 			int barW = width, barH = height / 3;
@@ -43,14 +45,19 @@ public class HBars extends HElement {
 			gMain.fillRect(x, y, barW, barH);
 
 			gMain.setColor(hp2);
-			double temp = (p.getAttack().getMaxHealth() / p.getAttack()
-					.getMaxHealth()) * barW;
+			double temp = (((AttackComponent) p.get(AttackComponent.class))
+					.getMaxHealth() / ((AttackComponent) p
+					.get(AttackComponent.class)).getMaxHealth())
+					* barW;
 			gMain.fillRect(x, y, (int) temp, barH);
 
 			gMain.setColor(Color.black);
 			gMain.drawRect(x, y, barW, barH);
 
-			gMain.drawString("hp: " + p.getAttack().getMaxHealth(), x + 5, y + 18);
+			gMain.drawString(
+					"hp: "
+							+ ((AttackComponent) p.get(AttackComponent.class))
+									.getMaxHealth(), x + 5, y + 18);
 
 			int y1 = y + barH;
 			// mana
@@ -58,7 +65,8 @@ public class HBars extends HElement {
 			gMain.fillRect(x, y1, barW, barH);
 
 			gMain.setColor(mana2);
-			temp = (p.getStats().mana / p.getAttack().getMaxMana()) * barW;
+			temp = (p.getStats().mana / ((AttackComponent) p
+					.get(AttackComponent.class)).getMaxMana()) * barW;
 			gMain.fillRect(x, y1, (int) temp, barH);
 
 			gMain.setColor(Color.black);
@@ -73,7 +81,8 @@ public class HBars extends HElement {
 			gMain.fillRect(x, y1, barW, barH);
 
 			gMain.setColor(attk2);
-			temp = p.getAttack().getWaitRatio() * barW;
+			temp = ((AttackComponent) p.get(AttackComponent.class))
+					.getWaitRatio() * barW;
 			gMain.fillRect(x, y1, (int) temp, barH);
 		}
 	}

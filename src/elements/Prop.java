@@ -12,12 +12,12 @@ public class Prop extends Member {
 			InteractComponent interact) {
 		super(physics, graphics);
 		this.interact = interact;
-		components.add(interact);
+		components.put(InteractComponent.class, interact);
 	}
 
 	@Override
 	public Member clone() {
-		Prop p = new Prop(physics, graphics, interact);
+		Prop p = new Prop(null, null, interact);
 
 		super.copy(p);
 

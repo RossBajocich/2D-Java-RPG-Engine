@@ -48,7 +48,7 @@ public class ResourceLoader {
 
 		int i = 0;
 		for (int x = 0; x < count; x++) {
-			Images.add(b.getSubimage(xloc + (x * width) + offset, yloc, width, height),
+			Images.set(b.getSubimage(xloc + (x * width) + offset, yloc, width, height),
 					id + "_" + i);
 			a.addImage(id + "_" + i);
 			i++;
@@ -69,7 +69,7 @@ public class ResourceLoader {
 			return null;
 		}
 
-		Images.add(b.getSubimage(x, y, width, height), fileName + "_" + id);
+		Images.set(b.getSubimage(x, y, width, height), fileName + "_" + id);
 		return Images.get(fileName + "_" + id);
 	}
 

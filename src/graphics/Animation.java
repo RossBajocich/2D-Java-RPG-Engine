@@ -14,10 +14,19 @@ public class Animation {
 	int index = 0;
 	double last_frame_t, duration;
 	boolean loop;
+	protected boolean running = false;
 
 	public Animation(double frame_duration, boolean loop) {
 		this.duration = frame_duration;
 		this.loop = loop;
+	}
+
+	public void setRunning(boolean state) {
+		running = state;
+	}
+
+	public boolean isRunning() {
+		return running;
 	}
 
 	public void setImages(List<String> input) {
@@ -29,7 +38,7 @@ public class Animation {
 		Images.load(b, EXT.NONE);
 	}
 
-	public BufferedImage getNext() {
+	private BufferedImage getNext() {
 		if (images.size() == 1) {
 			return Images.get(images.get(0));
 		}
@@ -38,11 +47,18 @@ public class Animation {
 			last_frame_t = System.currentTimeMillis();
 		}
 		if (index >= images.size()) {
-			if(loop){
+			if (loop) {
 				index = 0;
-			}else{
-				index = images.size()-1;
+			} else {
+				index = images.size() - 1;
 			}
+		}
+		return Images.get(images.get(index));
+	}
+
+	public BufferedImage getImage() {
+		if (running) {
+			return getNext();
 		}
 		return Images.get(images.get(index));
 	}

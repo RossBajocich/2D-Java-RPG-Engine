@@ -1,8 +1,5 @@
 package game;
 
-import java.awt.Color;
-
-import gui.BufferedScreen;
 
 public class Menu {
 	enum direction {
@@ -43,20 +40,6 @@ public class Menu {
 
 		case 1:
 
-		}
-	}
-
-	public void draw(BufferedScreen scr) {
-		int w = scr.getWidth() / 2;
-		int h = scr.getHeight() / 2;
-		for (int i = 0; i < options.length; i++) {
-			if (i == current) {
-				scr.getGraphics().setColor(Color.YELLOW);
-			}else{
-				scr.getGraphics().setColor(Color.WHITE);
-			}
-			scr.getGraphics().drawString(options[i], w,
-					(h - (options.length / 2)) * (i + 1));
 		}
 	}
 }
