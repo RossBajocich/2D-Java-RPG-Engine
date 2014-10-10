@@ -21,14 +21,13 @@ import utilities.Console;
 import utilities.Console.in;
 import utilities.Stats;
 import characters.Player;
-
 import components.AttackComponent;
+import components.ContainerInteract;
 import components.GraphicsComponent;
 import components.InteractComponent;
 import components.ItemInteract;
 import components.NPCInput;
 import components.PhysicsComponent;
-
 import elements.Decoration;
 import elements.Member;
 import elements.Prop;
@@ -169,29 +168,30 @@ public class XmlParser {
 
 		String imgName;
 		imgName = getTextValue(data, "img");
-		
+
 		PhysicsComponent physics = new PhysicsComponent();
-		
+
 		physics.setBounds(b);
-		
+
 		GraphicsComponent graphics = new GraphicsComponent();
-		
+
 		graphics.setWidth(width);
 		graphics.setHeight(height);
-		
+
 		Animation a = new Animation(0, false);
 		a.addImage(imgName);
 		graphics.addAnimation("default", a);
-				
+
 		switch (type) {
 		case "Player":
-			Player p = new Player(physics, graphics, new InteractComponent(), new AttackComponent(), new NPCInput());
-			
+			Player p = new Player(physics, graphics, new InteractComponent(),
+					new AttackComponent(), new NPCInput());
+
 			((AttackComponent) p.get(AttackComponent.class)).setHealth(health);
 			((AttackComponent) p.get(AttackComponent.class)).setMana(mana);
-			
+
 			Stats ps = new Stats();
-			
+
 			p.setType(type);
 			ps.attack = attack;
 			ps.def = def;
@@ -201,20 +201,23 @@ public class XmlParser {
 			ps.mana = mana;
 
 			p.setStats(ps);
-			
+
 			p.setName(name);
 
 			TypeMaker.addPlayer(id, p);
 
 			return p;
 		case "Container":
-			Container container = new Container(physics, graphics, size);
-			
+			Container container = new Container(physics, graphics, new ContainerInteract());
+			container.setType(type);
+			container.setSize(size);
+			container.setName(name);
 			TypeMaker.addContainer(id, container);
+			Console.log("created container " + name, in.INFO);
 			return container;
 		case "Item":
 			Item i = new Item(physics, graphics, new ItemInteract());
-			
+
 			Stats is = new Stats();
 
 			i.setType(type);
@@ -233,7 +236,7 @@ public class XmlParser {
 			return i;
 		case "Prop":
 			Prop prop = new Prop(physics, graphics, new InteractComponent());
-			
+
 			prop.setType(type);
 			prop.setName(name);
 

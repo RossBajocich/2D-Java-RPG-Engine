@@ -1,8 +1,5 @@
 package game;
 
-import items.Item;
-
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -17,23 +14,21 @@ import characters.Player;
 import components.GraphicsComponent;
 import components.PhysicsComponent;
 
-import elements.Decoration;
 import elements.Member;
-import elements.Prop;
 
 public class Level {
-	int width, height;
-	String bg;
+	private int width, height;
+	private String bg;
 
-	EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
+	private EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
 			RenderLayer.class);
 
-	List<Member> elements = new ArrayList<Member>();
-	// List<PhysicsComponent> moved = new ArrayList<PhysicsComponent>();
+	private List<Member> elements = new ArrayList<Member>();
+	private List<Member> toRemove = new ArrayList<Member>();
 	private Player mainPlayer;
 
 	public enum RenderLayer {
-		DECORATION(0), ITEM(1), MAIN(2);
+		DECORATION(0), MAIN(1);
 		RenderLayer(int x) {
 
 		}
@@ -59,9 +54,18 @@ public class Level {
 		int bottom = top + p.getBoundsRect(0, y_move).height;
 
 		if (left < 0 || top < 0 || right > width || bottom > height) {
-			Console.log("running into the wall! x= " + left + " y= " + top
-					+ " right = " + right + " bottom= " + bottom
-					+ " lvlwidth= " + width + " lvlheight= " + height, in.INFO);
+			if (left < 0) {
+				p.setX(0);
+			}
+			if (top < 0) {
+				p.setY(0 - 5);
+			}
+			if (right > width) {
+				p.setX((width - 225) - p.getBounds().getRect().width);
+			}
+			if (bottom > height) {
+				p.setY((height - 235) - p.getBounds().getRect().height);
+			}
 			return false;
 		}
 		for (Member m : elements) {
@@ -70,15 +74,9 @@ public class Level {
 				if (p.getBounds().intersects(
 						(PhysicsComponent) m.get(PhysicsComponent.class),
 						(int) x_move, (int) y_move)) {
-					Rectangle r1 = p.getBoundsRect(x_move, y_move);
-					Rectangle r2 = ((PhysicsComponent) m
-							.get(PhysicsComponent.class)).getBoundsRect();
-					System.out.printf(
-							"Collision player, x1:%d, y1:%d, w1:%d, h1:%d\n",
-							r1.x, r1.y, r1.width + r1.x, r1.y + r1.height);
-					System.out.printf(
-							"Collision member, x2:%d, y2:%d, w2:%d, h2:%d\n",
-							r2.x, r2.y, r2.width + r2.x, r2.y + r2.height);
+					// Rectangle r1 = p.getBoundsRect(x_move, y_move);
+					// Rectangle r2 = ((PhysicsComponent) m
+					// .get(PhysicsComponent.class)).getBoundsRect();
 					return false;
 				}
 			}
@@ -114,13 +112,30 @@ public class Level {
 		if (!elements.contains(e)) {
 			elements.add(e);
 			if (e.get(GraphicsComponent.class) != null) {
-				// TODO: remove this, very useless
-				if (e instanceof Decoration) {
+				// This corresponds to removeRender(...), both must be changed
+				// the same
+				switch (e.getType().toLowerCase()) {
+				case "decoration":
 					addRender(RenderLayer.DECORATION, e);
-				} else if (e instanceof Item) {
-					addRender(RenderLayer.ITEM, e);
-				} else {
+					break;
+				case "item":
+					addRender(RenderLayer.DECORATION, e);
+					break;
+				case "zone":
+					addRender(RenderLayer.DECORATION, e);
+					break;
+				case "container":
+					addRender(RenderLayer.DECORATION, e);
+					break;
+				case "player":
 					addRender(RenderLayer.MAIN, e);
+					break;
+				case "prop":
+					addRender(RenderLayer.MAIN, e);
+					break;
+				default:
+					addRender(RenderLayer.MAIN, e);
+					break;
 				}
 			} else {
 				Console.log("Not a valid object @ level -> addMember()",
@@ -139,14 +154,28 @@ public class Level {
 	}
 
 	private void removeRender(Member e) {
-		if (e instanceof Decoration) {
+		switch (e.getType().toLowerCase()) {
+		case "decoration":
 			remove(RenderLayer.DECORATION, e);
-		} else if (e instanceof Item) {
-			remove(RenderLayer.ITEM, e);
-		} else if (e instanceof Player || e instanceof Prop) {
+			break;
+		case "item":
+			remove(RenderLayer.DECORATION, e);
+			break;
+		case "zone":
+			remove(RenderLayer.DECORATION, e);
+			break;
+		case "container":
+			remove(RenderLayer.DECORATION, e);
+			break;
+		case "player":
 			remove(RenderLayer.MAIN, e);
-		} else {
-			remove(RenderLayer.DECORATION, e);
+			break;
+		case "prop":
+			remove(RenderLayer.MAIN, e);
+			break;
+		default:
+			remove(RenderLayer.MAIN, e);
+			break;
 		}
 	}
 
@@ -212,6 +241,13 @@ public class Level {
 	}
 
 	public void update() {
+		for (Member p : toRemove) {
+			removeRender(p);
+			elements.remove(p);
+			Console.log("removed " + p.getName(), in.INFO);
+		}
+		toRemove.clear();
+
 		for (Member p : elements) {
 			p.update();
 		}
@@ -224,15 +260,10 @@ public class Level {
 
 	}
 
-	public boolean attackRequest(Player sender) {
-
-		return false;
-	}
-
-	public void remove(Member e) {
-		// TODO: synchonize dis function
-		elements.remove(e);
-		removeRender(e);
+	public void removeMember(Member e) {
+		if (!toRemove.contains(e)) {
+			toRemove.add(e);
+		}
 	}
 
 	public void setMainPlayer(Player p) {

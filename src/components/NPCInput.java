@@ -6,8 +6,6 @@ import characters.Player;
 import elements.Member;
 
 public class NPCInput extends InputComponent {
-
-	Player modify;
 	Player chasing;
 	private double chaseDistance = 150;
 	long lastChase;
@@ -36,8 +34,8 @@ public class NPCInput extends InputComponent {
 	public void update() {
 		if (System.currentTimeMillis() - lastChase > chaseForget) {
 			chasing = null;
-			Console.log("chasing = null, lastChase:" + lastChase + " minus "
-					+ (System.currentTimeMillis() - lastChase), Console.in.INFO);
+			// Console.log("chasing = null, lastChase:" + lastChase + " minus "
+			// + (System.currentTimeMillis() - lastChase), Console.in.INFO);
 		}
 		if (!((AttackComponent) modify.get(AttackComponent.class)).isDead()) {
 			if (chasing != null) {
@@ -67,7 +65,7 @@ public class NPCInput extends InputComponent {
 	private void moveTowards(Player target) {
 		PhysicsComponent physics = modify.get(PhysicsComponent.class);
 
-		double ratio = modify.getStats().moveSpeed
+		double ratio = ((Player) modify).getStats().moveSpeed
 				/ physics.getDistance(target);
 		physics.setX(physics.getX()
 				+ (((PhysicsComponent) target.get(PhysicsComponent.class))

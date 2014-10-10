@@ -29,10 +29,10 @@ public class HUD {
 		int mapWidth = 100, mapHeight = 100;
 
 		int iWidth = 100, iHeight = 200;
-		HBackPack backpack = new HBackPack(0, width - iHeight, iWidth,
+		HContainer container = new HContainer(0, width - iHeight, iWidth,
 				iHeight, p);
-		backpack.setImage(ResourceLoader.getImage("white.png"));
-		addHUDElement(backpack);
+		container.setImage(ResourceLoader.getImage("HContainer.png"));
+		addHUDElement(container);
 
 		int infoW = 150, infoH = 100;
 		HInfoText info = new HInfoText(iWidth, height - infoH, infoW,

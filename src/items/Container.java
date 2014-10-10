@@ -6,10 +6,10 @@ import java.util.Random;
 
 import utilities.Console;
 import utilities.Stats;
-
+import components.ContainerInteract;
 import components.GraphicsComponent;
+import components.InteractComponent;
 import components.PhysicsComponent;
-
 import elements.Member;
 
 public class Container extends Member {
@@ -18,10 +18,11 @@ public class Container extends Member {
 	protected Stats stats;
 
 	public Container(PhysicsComponent physics, GraphicsComponent graphics,
-			int size) {
+			ContainerInteract interact) {
 		super(physics, graphics);
-		this.size = size;
 		stats = new Stats();
+		this.type = "container";
+		this.components.put(InteractComponent.class, interact);
 	}
 
 	public void setSize(int size) {
@@ -104,13 +105,19 @@ public class Container extends Member {
 
 	@Override
 	public Member clone() {
-		Container c = new Container(null, null, count);
+		Container c = new Container(
+				(PhysicsComponent) components.get(PhysicsComponent.class),
+				(GraphicsComponent) components.get(GraphicsComponent.class),
+				(ContainerInteract) components.get(InteractComponent.class));
 		for (Item i : items) {
 			c.addItem(i);
 		}
 		c.updateStats();
 		c.type = type;
-
+		c.count = count;
+		c.size = size;
+		c.stats = stats;
+		
 		super.copy(c);
 
 		return c;

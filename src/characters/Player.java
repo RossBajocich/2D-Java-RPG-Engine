@@ -2,16 +2,15 @@ package characters;
 
 import graphics.Animation;
 import items.Container;
-import items.Item;
 import loaders.ResourceLoader;
+import utilities.Console;
+import utilities.Console.in;
 import utilities.Stats;
-
 import components.AttackComponent;
 import components.GraphicsComponent;
 import components.InputComponent;
 import components.InteractComponent;
 import components.PhysicsComponent;
-
 import elements.Member;
 
 public class Player extends Member {
@@ -46,7 +45,7 @@ public class Player extends Member {
 				17, 24, "up_walk", 3, 0, 200, true);
 		down_walk = ResourceLoader.getAnimationFromSheet("link_sheet.png", 3,
 				89, 18, 24, "down_walk", 4, 1, 200, true);
-		
+
 		die = new Animation(1000, false);
 		die.addImage("dead.png");
 
@@ -59,8 +58,6 @@ public class Player extends Member {
 		graphics.addAnimation("down_walk", down_walk);
 		graphics.addAnimation("die", die);
 
-		
-		
 		graphics.setCurrentAnimation("down_walk");
 	}
 
@@ -85,12 +82,11 @@ public class Player extends Member {
 	}
 
 	public void setContainer(Container b) {
-		Container temp = container;
-		container = b;
-		container.setSize(container.getSize() + temp.getSize());
-		for (Item i : temp.getItems()) {
-			container.addItem(i);
-		}
+		this.container = b;
+		//container.setSize(container.getSize() + temp.getSize());
+		//for (Item i : temp.getItems()) {
+		//	container.addItem(i);
+		//}
 	}
 
 	public Container getContainer() {

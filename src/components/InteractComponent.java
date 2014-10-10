@@ -1,11 +1,10 @@
 package components;
 
-import characters.Player;
+import utilities.Console;
+import utilities.Console.in;
+import elements.Member;
 
 public class InteractComponent extends Component {
-
-	private long lastInteract = 0;
-	private float interactWait = 0.5f;
 	private double interactDistance = 100;
 
 	public InteractComponent() {
@@ -21,34 +20,39 @@ public class InteractComponent extends Component {
 		return interactDistance;
 	}
 
-	public void interact(){
-		//get closest InteractComponent and interact with it
-		
+	public void interact() {
+		// get closest InteractComponent and interact with it
+		for (Member p : modify.getLevel().getElements()) {
+			if (p.get(InteractComponent.class) != null
+					&& p != modify
+					&& ((PhysicsComponent) p.get(PhysicsComponent.class))
+							.getDistance(modify) < interactDistance) {
+				interact(p);
+				((InteractComponent) p.get(InteractComponent.class))
+						.onInteract(modify);
+			}
+		}
 	}
-	
+
 	/*
 	 * other system needs to check if the two components are close enough for an
 	 * interact to happen, but this does not handle it
 	 */
-	public void interact(InteractComponent i) {
-		if ((System.currentTimeMillis() - lastInteract) > interactWait * 1000) {
-			lastInteract = System.currentTimeMillis();
-		}
-		if (i != null) {
-			interact(i);
-			i.onInteract(this);
-		}
+	protected void interact(Member target) {
+		// nothing
+		Console.log("basic interact() from " + modify.getName()
+				+ " @ interactComponent being called on " + target.getName(),
+				in.INFO);
 	}
 
 	/*
 	 * private scope because only time something should call onInteract, is when
 	 * interact is called on it through this component
 	 */
-	private void onInteract(InteractComponent interactComponent) {
-
-	}
-
-	public void onInteract(Player p) {
-		
+	protected void onInteract(Member sender) {
+		// nothing
+		Console.log("basic interact() from " + sender.getName()
+				+ " @ interactComponent being called on " + modify.getName(),
+				in.INFO);
 	}
 }

@@ -13,7 +13,6 @@ import utilities.Mouse;
 public class Game {
 	Mouse m;
 	HUD hud;
-	View mainView;
 	World w;
 
 	Menu menu;

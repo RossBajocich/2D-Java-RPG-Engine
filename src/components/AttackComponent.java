@@ -54,7 +54,7 @@ public class AttackComponent extends Component {
 				if (((Player) modify).getContainer() != null) {
 					((Player) modify).getContainer().dropItems();
 				}
-				((Member) modify).getLevel().remove(modify);
+				((Member) modify).getLevel().removeMember(modify);
 			}
 		});
 	}
@@ -90,14 +90,16 @@ public class AttackComponent extends Component {
 	public boolean attack() {
 		// get closest player or whatever and call attack() on it
 		for (Member p : modify.getLevel().getElements()) {
-			if (p.getType().equalsIgnoreCase("player")) {
-				if (((Player) p).get(AttackComponent.class) == this) {
+			if (p.get(AttackComponent.class) != null) {
+				if (p.get(AttackComponent.class) == this) {
 					continue;
 				}
-				if (((PhysicsComponent) modify.get(PhysicsComponent.class)).getDistance(p) < this.attackDistance) {
+				if (((PhysicsComponent) modify.get(PhysicsComponent.class))
+						.getDistance(p) < this.attackDistance) {
 					// Should i call onAttack() here? Or inside attack()?
 					attack((Player) p);
-					((AttackComponent) ((Player) p).get(AttackComponent.class)).onAttack(this);
+					((AttackComponent) p.get(AttackComponent.class))
+							.onAttack(this);
 					return true;
 				}
 			}
@@ -106,7 +108,6 @@ public class AttackComponent extends Component {
 	}
 
 	public void attack(Player p) {
-		Console.log("THis player attacked " + p.getName(), in.INFO);
 		if (dead) {
 			return;
 		}
@@ -119,14 +120,16 @@ public class AttackComponent extends Component {
 
 				if (i <= p.getStats().def) {
 					// missed
-					// Console.log("Player " + modify.getName()
-					// + " missed attack against " + p.getName(), in.INFO);
+					Console.log("Player " + modify.getName()
+							+ " missed attack against " + p.getName(), in.INFO);
 				} else {
-					int atk = p.getStats().attack;
-					if (atk < 0) {
-						atk = 0;
+					int attack = ((Player) modify).getStats().attack;
+					if (attack < 0) {
+						attack = 0;
 					}
-					((AttackComponent) p.get(AttackComponent.class)).addHealth(-1 * atk);
+					((AttackComponent) p.get(AttackComponent.class))
+							.addHealth(-1 * attack);
+					Console.log("THis player attacked " + p.getName(), in.INFO);
 				}
 				lastAttack = System.currentTimeMillis();
 			}

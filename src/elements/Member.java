@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import utilities.Console;
+import utilities.Console.in;
 import components.Component;
 import components.GraphicsComponent;
 import components.PhysicsComponent;
 
 public abstract class Member {
 
-	protected String name, type;
+	protected String name, type = "";
 
 	protected Level level;
 	protected Map<Class<? extends Component>, Component> components = new HashMap<>();
@@ -38,6 +41,14 @@ public abstract class Member {
 	}
 
 	public <T extends Component> T get(Class<? extends Component> clazz) {
+		//check if a component in the list is a subclass of clazz
+		if(components.get(clazz) == null){
+			for(Entry<Class<? extends Component>, Component> c : components.entrySet()){
+				if(clazz.isAssignableFrom(c.getKey())){
+					return (T) clazz.cast(c.getValue());
+				}
+			}
+		}
 		return (T) clazz.cast(components.get(clazz));
 	}
 
@@ -80,11 +91,11 @@ public abstract class Member {
 
 	public void copy(Member m) {
 		m.components.putAll(this.components);
-		
-		for(Component c : m.components.values()){
+
+		for (Component c : m.components.values()) {
 			c.setModify(m);
 		}
-		
+
 		m.type = this.type;
 		m.name = this.name;
 		m.level = this.level;

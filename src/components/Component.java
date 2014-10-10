@@ -3,7 +3,6 @@ package components;
 import elements.Member;
 
 public abstract class Component {
-
 	Member modify;
 
 	public Component() {

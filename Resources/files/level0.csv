@@ -1,3 +1,5 @@
 HEAD,id,500,500,background.png
 Player,0,10,10,ross
 NPC,1,100,100,orc
+Item,0,20,200,sword o death
+Container,0,200,225,backpack

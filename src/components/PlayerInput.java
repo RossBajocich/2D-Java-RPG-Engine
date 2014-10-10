@@ -5,9 +5,7 @@ import java.awt.event.KeyEvent;
 import utilities.Console;
 import utilities.Keyboard;
 import characters.Player;
-
 import components.PhysicsComponent.Direction;
-
 import elements.Member;
 
 public class PlayerInput extends InputComponent {
@@ -23,6 +21,7 @@ public class PlayerInput extends InputComponent {
 		}
 	}
 
+	@Override
 	public void update() {
 		boolean isMoving = false;
 		if (Keyboard.getKey(KeyEvent.VK_W)) {
@@ -57,11 +56,10 @@ public class PlayerInput extends InputComponent {
 				.getCurrentAnimation().setRunning(isMoving);
 
 		if (Keyboard.getKey(KeyEvent.VK_F)) {
-			((AttackComponent) ((Player) modify).get(AttackComponent.class))
-					.attack();
+			((AttackComponent) (modify).get(AttackComponent.class)).attack();
 		}
 		if (Keyboard.getKey(KeyEvent.VK_I)) {
-			((InteractComponent) ((Player) modify).get(InteractComponent.class))
+			((InteractComponent) modify.get(InteractComponent.class))
 					.interact();
 		}
 	}

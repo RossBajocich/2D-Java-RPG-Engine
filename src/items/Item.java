@@ -11,12 +11,12 @@ import elements.Member;
 public class Item extends Member {
 
 	private Stats stats;
-	private ItemInteract interact;
 
 	public Item(PhysicsComponent physics, GraphicsComponent graphics,
 			ItemInteract interact) {
 		super(physics, graphics);
-		this.interact = interact;
+		components.put(ItemInteract.class, interact);
+		interact.setModify(this);
 	}
 
 	public Stats getStats() {
@@ -29,7 +29,10 @@ public class Item extends Member {
 
 	@Override
 	public Member clone() {
-		Item i = new Item(null, null, interact);
+		Item i = new Item(
+				(PhysicsComponent) components.get(PhysicsComponent.class),
+				(GraphicsComponent) components.get(GraphicsComponent.class),
+				(ItemInteract) components.get(ItemInteract.class));
 		i.stats = stats;
 		i.name = name;
 		i.type = type;

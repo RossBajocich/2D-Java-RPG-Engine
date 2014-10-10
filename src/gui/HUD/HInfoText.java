@@ -34,7 +34,7 @@ public class HInfoText extends HElement {
 		g.setFont(new Font(Font.SERIF, Font.PLAIN, h));
 		int ty = 1;
 		for (String str : stats) {
-			g.drawString(str, x, (h * ty) + y);
+			g.drawString(str, x + 5, (h * ty) + y);
 			ty++;
 		}
 	}

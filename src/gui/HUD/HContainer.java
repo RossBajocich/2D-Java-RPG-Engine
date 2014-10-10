@@ -4,22 +4,24 @@ import gui.Screen;
 import items.Container;
 import items.Item;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
-import components.GraphicsComponent;
-
 import utilities.Console;
 import utilities.Console.in;
 import characters.Player;
 
-public class HBackPack extends HElement {
+import components.GraphicsComponent;
+
+public class HContainer extends HElement {
 	Container b;
 	Player player;
 
-	public HBackPack(int x, int y, int width, int height, Player player) {
+	public HContainer(int x, int y, int width, int height, Player player) {
 		super(x, y, width, height);
 		this.b = player.getContainer();
 		this.player = player;
@@ -69,22 +71,26 @@ public class HBackPack extends HElement {
 	@Override
 	public void draw(Screen s) {
 		s.getGraphics().drawImage(image, x, y, width, height, null);
-		if (b == null) {
-			return;
-		}
+
 		Graphics2D g = s.getGraphics();
 		int zx = 0, zy = 0;
-		for (Item i : b.getItems()) {
-			int nWidth = 20;
-			int nHeight = 20;
-			g.drawImage(((GraphicsComponent) i.get(GraphicsComponent.class))
-					.getImage(), x + (zx * nWidth), y + (zy * nHeight), nWidth,
-					nHeight, null);
-			zx++;
-			if (zx * nWidth >= width) {
-				zx = 0;
-				zy++;
+		if (b != null) {
+			for (Item i : b.getItems()) {
+				int nWidth = 20;
+				int nHeight = 20;
+				g.drawImage(
+						((GraphicsComponent) i.get(GraphicsComponent.class))
+								.getImage(), x + (zx * nWidth), y
+								+ (zy * nHeight), nWidth, nHeight, null);
+				zx++;
+				if (zx * nWidth >= width) {
+					zx = 0;
+					zy++;
+				}
 			}
 		}
+		g.setColor(Color.black);
+		g.setStroke(new BasicStroke(2));
+		g.drawRect(x, y, width, height);
 	}
 }
