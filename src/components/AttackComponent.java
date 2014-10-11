@@ -22,15 +22,6 @@ public class AttackComponent extends Component {
 		super();
 	}
 
-	@Override
-	public void update() {
-		stats = ((Player) modify).getStats();
-	}
-
-	public double getAttackDistance() {
-		return attackDistance;
-	}
-
 	public void addHealth(int h) {
 		if (health + h <= 0) {
 			health = 0;
@@ -42,51 +33,6 @@ public class AttackComponent extends Component {
 		}
 	}
 
-	private void die() {
-		dead = true;
-		Clock.createTimer(2000, new Functor() {
-			@Override
-			public void execute(Object o) {
-			}
-
-			@Override
-			public void execute() {
-				if (((Player) modify).getContainer() != null) {
-					((Player) modify).getContainer().dropItems();
-				}
-				((Member) modify).getLevel().removeMember(modify);
-			}
-		});
-	}
-
-	public boolean isDead() {
-		return dead;
-	}
-
-	public void setMana(int m) {
-		mana = m;
-	}
-
-	public void setHealth(int h) {
-		this.health = h;
-	}
-
-	public int getHealth() {
-		return health;
-	}
-
-	public int getMana() {
-		return mana;
-	}
-
-	public double getMaxMana() {
-		return stats.mana;
-	}
-
-	public double getMaxHealth() {
-		return stats.health;
-	}
-
 	public boolean attack() {
 		// get closest player or whatever and call attack() on it
 		for (Member p : modify.getLevel().getElements()) {
@@ -94,12 +40,10 @@ public class AttackComponent extends Component {
 				if (p.get(AttackComponent.class) == this) {
 					continue;
 				}
-				if (((PhysicsComponent) modify.get(PhysicsComponent.class))
-						.getDistance(p) < this.attackDistance) {
+				if ((modify.get(PhysicsComponent.class)).getDistance(p) < this.attackDistance) {
 					// Should i call onAttack() here? Or inside attack()?
 					attack((Player) p);
-					((AttackComponent) p.get(AttackComponent.class))
-							.onAttack(this);
+					(p.get(AttackComponent.class)).onAttack(this);
 					return true;
 				}
 			}
@@ -111,7 +55,7 @@ public class AttackComponent extends Component {
 		if (dead) {
 			return;
 		}
-		if (!((AttackComponent) p.get(AttackComponent.class)).isDead()) {
+		if (!(p.get(AttackComponent.class)).isDead()) {
 			// TODO: make this check a timer...
 			if ((System.currentTimeMillis() - lastAttack) > stats.speed * 1000) {
 				// TODO: make this "miss" code better
@@ -127,8 +71,7 @@ public class AttackComponent extends Component {
 					if (attack < 0) {
 						attack = 0;
 					}
-					((AttackComponent) p.get(AttackComponent.class))
-							.addHealth(-1 * attack);
+					(p.get(AttackComponent.class)).addHealth(-1 * attack);
 					Console.log("THis player attacked " + p.getName(), in.INFO);
 				}
 				lastAttack = System.currentTimeMillis();
@@ -137,10 +80,24 @@ public class AttackComponent extends Component {
 
 	}
 
-	public void onAttack(AttackComponent p) {
-		if (!dead) {
-			// attack(p);
-		}
+	public double getAttackDistance() {
+		return attackDistance;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public int getMana() {
+		return mana;
+	}
+
+	public double getMaxHealth() {
+		return stats.health;
+	}
+
+	public double getMaxMana() {
+		return stats.mana;
 	}
 
 	public double getWaitRatio() {
@@ -149,5 +106,45 @@ public class AttackComponent extends Component {
 			return 1;
 		}
 		return diff / ((double) stats.speed * 1000);
+	}
+
+	public boolean isDead() {
+		return dead;
+	}
+
+	public void onAttack(AttackComponent p) {
+		if (!dead) {
+			// attack(p);
+		}
+	}
+
+	public void setHealth(int h) {
+		this.health = h;
+	}
+
+	public void setMana(int m) {
+		mana = m;
+	}
+
+	@Override
+	public void update() {
+		stats = ((Player) modify).getStats();
+	}
+
+	private void die() {
+		dead = true;
+		Clock.createTimer(2000, new Functor() {
+			@Override
+			public void execute() {
+				if (((Player) modify).getContainer() != null) {
+					((Player) modify).getContainer().dropItems();
+				}
+				((Member) modify).getLevel().removeMember(modify);
+			}
+
+			@Override
+			public void execute(Object o) {
+			}
+		});
 	}
 }

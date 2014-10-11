@@ -14,12 +14,12 @@ public class BufferedScreen extends Screen {
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
-	public void reset() {
-		graphics = img.getGraphics();
-		//graphics.clearRect(x, y, width, height);
-	}
-
 	public BufferedImage getImage() {
 		return (BufferedImage) img;
+	}
+
+	public void reset() {
+		graphics = img.getGraphics();
+		// graphics.clearRect(x, y, width, height);
 	}
 }

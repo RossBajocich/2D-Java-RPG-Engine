@@ -11,11 +11,6 @@ public class InteractComponent extends Component {
 		super();
 	}
 
-	@Override
-	public void update() {
-
-	}
-
 	public double getInteractDistance() {
 		return interactDistance;
 	}
@@ -25,13 +20,16 @@ public class InteractComponent extends Component {
 		for (Member p : modify.getLevel().getElements()) {
 			if (p.get(InteractComponent.class) != null
 					&& p != modify
-					&& ((PhysicsComponent) p.get(PhysicsComponent.class))
-							.getDistance(modify) < interactDistance) {
+					&& (p.get(PhysicsComponent.class)).getDistance(modify) < interactDistance) {
 				interact(p);
-				((InteractComponent) p.get(InteractComponent.class))
-						.onInteract(modify);
+				(p.get(InteractComponent.class)).onInteract(modify);
 			}
 		}
+	}
+
+	@Override
+	public void update() {
+
 	}
 
 	/*

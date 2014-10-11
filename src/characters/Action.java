@@ -14,15 +14,15 @@ public class Action {
 		this.name = name;
 	}
 
+	public void call(Member caller) {
+		function.execute(caller);
+	}
+
 	public void setAnim(Animation a) {
 		anim = a;
 	}
 
 	public void setFunction(Functor f) {
 		function = f;
-	}
-	
-	public void call(Member caller){
-		function.execute(caller);
 	}
 }

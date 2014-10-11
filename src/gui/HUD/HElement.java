@@ -18,24 +18,14 @@ public abstract class HElement {
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
-	public abstract void update();
-
-	public void reset() {
-
-	}
+	public abstract void draw(Screen s);
 
 	public Rectangle getBounds() {
 		return new Rectangle(x, y, width, height);
 	}
 
-	public abstract void draw(Screen s);
-
 	public BufferedImage getImage() {
 		return image;
-	}
-
-	public void setImage(BufferedImage image) {
-		this.image = image;
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -49,4 +39,14 @@ public abstract class HElement {
 	public void mouseReleased(MouseEvent e) {
 
 	}
+
+	public void reset() {
+
+	}
+
+	public void setImage(BufferedImage image) {
+		this.image = image;
+	}
+
+	public abstract void update();
 }

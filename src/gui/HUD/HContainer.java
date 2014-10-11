@@ -28,6 +28,44 @@ public class HContainer extends HElement {
 	}
 
 	@Override
+	public void draw(Screen s) {
+		s.getGraphics().drawImage(image, x, y, width, height, null);
+
+		Graphics2D g = s.getGraphics();
+		int zx = 0, zy = 0;
+		if (b != null) {
+			for (Item i : b.getItems()) {
+				int nWidth = 20;
+				int nHeight = 20;
+				g.drawImage((i.get(GraphicsComponent.class)).getImage(), x
+						+ (zx * nWidth), y + (zy * nHeight), nWidth, nHeight,
+						null);
+				zx++;
+				if (zx * nWidth >= width) {
+					zx = 0;
+					zy++;
+				}
+			}
+		}
+		g.setColor(Color.black);
+		g.setStroke(new BasicStroke(2));
+		g.drawRect(x, y, width, height);
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		drop(e.getPoint());
+		Console.log("Mouse clicked on the FUCKING BACKPACK", in.INFO);
+	}
+
+	public void mousePressed(MouseEvent e) {
+		drop(e.getPoint());
+	}
+
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
 	public void update() {
 		b = player.getContainer();
 	}
@@ -53,44 +91,5 @@ public class HContainer extends HElement {
 			}
 			px++;
 		}
-	}
-
-	public void mouseClicked(MouseEvent e) {
-		drop(e.getPoint());
-		Console.log("Mouse clicked on the FUCKING BACKPACK", in.INFO);
-	}
-
-	public void mousePressed(MouseEvent e) {
-		drop(e.getPoint());
-	}
-
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	@Override
-	public void draw(Screen s) {
-		s.getGraphics().drawImage(image, x, y, width, height, null);
-
-		Graphics2D g = s.getGraphics();
-		int zx = 0, zy = 0;
-		if (b != null) {
-			for (Item i : b.getItems()) {
-				int nWidth = 20;
-				int nHeight = 20;
-				g.drawImage(
-						((GraphicsComponent) i.get(GraphicsComponent.class))
-								.getImage(), x + (zx * nWidth), y
-								+ (zy * nHeight), nWidth, nHeight, null);
-				zx++;
-				if (zx * nWidth >= width) {
-					zx = 0;
-					zy++;
-				}
-			}
-		}
-		g.setColor(Color.black);
-		g.setStroke(new BasicStroke(2));
-		g.drawRect(x, y, width, height);
 	}
 }

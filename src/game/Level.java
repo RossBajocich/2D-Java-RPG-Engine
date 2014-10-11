@@ -17,95 +17,30 @@ import components.PhysicsComponent;
 import elements.Member;
 
 public class Level {
-	private int width, height;
-	private String bg;
-
-	private EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
-			RenderLayer.class);
-
-	private List<Member> elements = new ArrayList<Member>();
-	private List<Member> toRemove = new ArrayList<Member>();
-	private Player mainPlayer;
-
 	public enum RenderLayer {
 		DECORATION(0), MAIN(1);
 		RenderLayer(int x) {
 
 		}
 	}
+	private int width, height;
 
-	public Level(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+	private String bg;
+
+	private EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
+			RenderLayer.class);
+	private List<Member> elements = new ArrayList<Member>();
+	private List<Member> toRemove = new ArrayList<Member>();
+
+	private Player mainPlayer;
 
 	public Level() {
 
 	}
 
-	/*
-	 * Runs through all objects, and checks if PhysicsComponent p collides with
-	 * any that have a PhysicsComponent
-	 */
-	public boolean tryMove(PhysicsComponent p, double x_move, double y_move) {
-		int left = p.getBoundsRect(x_move, 0).x;
-		int top = p.getBoundsRect(0, y_move).y;
-		int right = left + p.getBoundsRect(x_move, 0).width;
-		int bottom = top + p.getBoundsRect(0, y_move).height;
-
-		if (left < 0 || top < 0 || right > width || bottom > height) {
-			if (left < 0) {
-				p.setX(0);
-			}
-			if (top < 0) {
-				p.setY(0 - 5);
-			}
-			if (right > width) {
-				p.setX((width - 225) - p.getBounds().getRect().width);
-			}
-			if (bottom > height) {
-				p.setY((height - 235) - p.getBounds().getRect().height);
-			}
-			return false;
-		}
-		for (Member m : elements) {
-			if (((PhysicsComponent) m.get(PhysicsComponent.class)).getBounds() != null
-					&& m.get(PhysicsComponent.class) != p) {
-				if (p.getBounds().intersects(
-						(PhysicsComponent) m.get(PhysicsComponent.class),
-						(int) x_move, (int) y_move)) {
-					// Rectangle r1 = p.getBoundsRect(x_move, y_move);
-					// Rectangle r2 = ((PhysicsComponent) m
-					// .get(PhysicsComponent.class)).getBoundsRect();
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	public void setWidth(int width) {
+	public Level(int width, int height) {
 		this.width = width;
-	}
-
-	public void setHeight(int height) {
 		this.height = height;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public BufferedImage getBackground() {
-		return Images.get(bg);
-	}
-
-	public List<Member> getElements() {
-		return elements;
 	}
 
 	public void addMember(Member e) {
@@ -144,6 +79,134 @@ public class Level {
 		}
 	}
 
+	public BufferedImage getBackground() {
+		return Images.get(bg);
+	}
+
+	public List<Member> getElements() {
+		return elements;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public Player getMainPlayer() {
+		if (mainPlayer != null) {
+			return mainPlayer;
+		} else {
+			Console.log(("No MainPlayer in this level!"), Console.in.ERROR);
+			return null;
+		}
+	}
+
+	public EnumMap<RenderLayer, List<Member>> getRenders() {
+		return renders;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void removeMember(Member e) {
+		if (!toRemove.contains(e)) {
+			toRemove.add(e);
+		}
+	}
+
+	public void setBackground(String data) {
+		if (data.contains(".")) {
+			Images.load(data, Images.EXT.NONE);
+		} else {
+			Images.load(data, Images.EXT.JPG);
+		}
+
+		bg = data;
+
+		if (Images.get(bg).getWidth() != width
+				|| Images.get(bg).getHeight() != height) {
+			BufferedImage original = Images.get(bg);
+
+			BufferedImage f = new BufferedImage(width, height,
+					BufferedImage.TYPE_INT_ARGB);
+			f.getGraphics().drawImage(original, 0, 0, width, height, null);
+			Images.set(f, bg);
+		}
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public void setMainPlayer(Player p) {
+		mainPlayer = p;
+		Console.log("main player for this level is " + mainPlayer, in.INFO);
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	/*
+	 * Runs through all objects, and checks if PhysicsComponent p collides with
+	 * any that have a PhysicsComponent
+	 */
+	public boolean tryMove(PhysicsComponent p, double x_move, double y_move) {
+		int left = p.getBoundsRect(x_move, 0).x;
+		int top = p.getBoundsRect(0, y_move).y;
+		int right = left + p.getBoundsRect(x_move, 0).width;
+		int bottom = top + p.getBoundsRect(0, y_move).height;
+
+		if (left < 0 || top < 0 || right > width || bottom > height) {
+			if (left < 0) {
+				p.setX(0);
+			}
+			if (top < 0) {
+				p.setY(0 - 5);
+			}
+			if (right > width) {
+				p.setX((width - 225) - p.getBounds().getRect().width);
+			}
+			if (bottom > height) {
+				p.setY((height - 235) - p.getBounds().getRect().height);
+			}
+			return false;
+		}
+		for (Member m : elements) {
+			if ((m.get(PhysicsComponent.class)).getBounds() != null
+					&& m.get(PhysicsComponent.class) != p) {
+				if (p.getBounds().intersects(m.get(PhysicsComponent.class),
+						(int) x_move, (int) y_move)) {
+					// Rectangle r1 = p.getBoundsRect(x_move, y_move);
+					// Rectangle r2 = ( m
+					// .get(PhysicsComponent.class)).getBoundsRect();
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public void update() {
+		for (Member p : toRemove) {
+			removeRender(p);
+			elements.remove(p);
+			Console.log("removed " + p.getName(), in.INFO);
+		}
+		toRemove.clear();
+
+		for (Member p : elements) {
+			p.update();
+		}
+
+		if (renders.containsKey(RenderLayer.MAIN)) {
+			List<Member> old = new ArrayList<Member>(
+					renders.get(RenderLayer.MAIN));
+			renders.put(RenderLayer.MAIN, getSorted(old));
+		}
+
+	}
+
 	private void addRender(RenderLayer rl, Member r) {
 		List<Member> currentValue = renders.get(rl);
 		if (currentValue == null) {
@@ -151,6 +214,14 @@ public class Level {
 			renders.put(rl, currentValue);
 		}
 		currentValue.add(r);
+	}
+
+	private List<Member> getSorted(List<Member> old) {
+		return sort(old);
+	}
+
+	private void remove(RenderLayer i, Member e) {
+		renders.get(i).remove(e);
 	}
 
 	private void removeRender(Member e) {
@@ -179,95 +250,22 @@ public class Level {
 		}
 	}
 
-	private void remove(RenderLayer i, Member e) {
-		renders.get(i).remove(e);
-	}
-
-	public EnumMap<RenderLayer, List<Member>> getRenders() {
-		return renders;
-	}
-
-	private List<Member> getSorted(List<Member> old) {
-		return sort(old);
-	}
-
 	private List<Member> sort(List<Member> in) {
 		TreeMap<Integer, Member> vals = new TreeMap<Integer, Member>();
 
 		for (Member r : in) {
 			PhysicsComponent p = r.get(PhysicsComponent.class);
-			if (!vals.containsKey((int) (p.getY() + ((GraphicsComponent) r
+			if (!vals.containsKey((int) (p.getY() + (r
 					.get(GraphicsComponent.class)).getHeight()))) {
-				vals.put((int) (p.getY() + ((GraphicsComponent) r
-						.get(GraphicsComponent.class)).getHeight()), r);
+				vals.put((int) (p.getY() + (r.get(GraphicsComponent.class))
+						.getHeight()), r);
 			} else {
 				vals.put(
 						(int) (p.getY()
-								+ ((GraphicsComponent) r
-										.get(GraphicsComponent.class))
-										.getHeight() + 1), r);
+								+ (r.get(GraphicsComponent.class)).getHeight() + 1),
+						r);
 			}
 		}
 		return new ArrayList<Member>(vals.values());
-	}
-
-	public void setBackground(String data) {
-		if (data.contains(".")) {
-			Images.load(data, Images.EXT.NONE);
-		} else {
-			Images.load(data, Images.EXT.JPG);
-		}
-
-		bg = data;
-
-		if (Images.get(bg).getWidth() != width
-				|| Images.get(bg).getHeight() != height) {
-			BufferedImage original = Images.get(bg);
-
-			BufferedImage f = new BufferedImage(width, height,
-					BufferedImage.TYPE_INT_ARGB);
-			f.getGraphics().drawImage(original, 0, 0, width, height, null);
-			Images.set(f, bg);
-		}
-	}
-
-	public Player getMainPlayer() {
-		if (mainPlayer != null) {
-			return mainPlayer;
-		} else {
-			Console.log(("No MainPlayer in this level!"), Console.in.ERROR);
-			return null;
-		}
-	}
-
-	public void update() {
-		for (Member p : toRemove) {
-			removeRender(p);
-			elements.remove(p);
-			Console.log("removed " + p.getName(), in.INFO);
-		}
-		toRemove.clear();
-
-		for (Member p : elements) {
-			p.update();
-		}
-
-		if (renders.containsKey(RenderLayer.MAIN)) {
-			List<Member> old = new ArrayList<Member>(
-					renders.get(RenderLayer.MAIN));
-			renders.put(RenderLayer.MAIN, getSorted(old));
-		}
-
-	}
-
-	public void removeMember(Member e) {
-		if (!toRemove.contains(e)) {
-			toRemove.add(e);
-		}
-	}
-
-	public void setMainPlayer(Player p) {
-		mainPlayer = p;
-		Console.log("main player for this level is " + mainPlayer, in.INFO);
 	}
 }

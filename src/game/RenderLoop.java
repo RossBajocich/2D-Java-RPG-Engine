@@ -61,7 +61,8 @@ public class RenderLoop {
 
 		Level a = w.getCurrentLevel();
 
-		playerReference.draw(0, 0, mainScr.getWidth(), mainScr.getHeight(), gMain, a);
+		playerReference.draw(0, 0, mainScr.getWidth(), mainScr.getHeight(),
+				gMain, a);
 
 		drawMap(hudScr.getWidth() - 100, hudScr.getHeight() - 100, 100, 100,
 				gHUD);
@@ -69,6 +70,10 @@ public class RenderLoop {
 		drawHUD(hud);
 
 		gMain.dispose();
+	}
+
+	private void drawHUD(HUD hud) {
+		hud.render(hudScr);
 	}
 
 	private void drawMap(int x, int y, int width, int height, Graphics gMap) {
@@ -80,14 +85,11 @@ public class RenderLoop {
 
 		for (List<Member> renders : a.getRenders().values()) {
 			for (Member e : renders) {
-				if (((GraphicsComponent) e.get(GraphicsComponent.class))
-						.getImage() != null) {
+				if ((e.get(GraphicsComponent.class)).getImage() != null) {
 					GraphicsComponent graphics = e.get(GraphicsComponent.class);
 
-					int mx = (int) ((PhysicsComponent) e
-							.get(PhysicsComponent.class)).getX();
-					int my = (int) ((PhysicsComponent) e
-							.get(PhysicsComponent.class)).getY();
+					int mx = (int) (e.get(PhysicsComponent.class)).getX();
+					int my = (int) (e.get(PhysicsComponent.class)).getY();
 
 					gMap.drawImage(
 							graphics.getImage(),
@@ -100,9 +102,8 @@ public class RenderLoop {
 						// debug
 						gMap.setColor(Color.red);
 						((Graphics2D) gMap).setStroke(new BasicStroke(2));
-						Rectangle r = ((PhysicsComponent) e
-								.get(PhysicsComponent.class)).getBoundsRect(x,
-								y);
+						Rectangle r = (e.get(PhysicsComponent.class))
+								.getBoundsRect(x, y);
 						gMap.drawRect((int) ((r.x / a.getWidth()) * width),
 								(int) ((r.y / a.getHeight()) * height),
 								(int) ((r.width / a.getWidth()) * width),
@@ -123,9 +124,5 @@ public class RenderLoop {
 			gMap.drawRect(x, y, width, height);
 		}
 		gMap.dispose();
-	}
-
-	private void drawHUD(HUD hud) {
-		hud.render(hudScr);
 	}
 }

@@ -7,13 +7,13 @@ import components.PhysicsComponent;
 public class Bounds {
 	Rectangle rect;
 
+	public Bounds(int bw, int bh) {
+		rect = new Rectangle(0, 0, bw, bh);
+	}
+
 	// add shape support
 	public Bounds(int bx, int by, int bw, int bh) {
 		rect = new Rectangle(bx, by, bw, bh);
-	}
-
-	public Bounds(int bw, int bh) {
-		rect = new Rectangle(0, 0, bw, bh);
 	}
 
 	public Rectangle getRect() {

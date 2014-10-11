@@ -20,10 +20,38 @@ public class GraphicsComponent extends Component {
 		setCurrentAnimation("default");
 	}
 
-	public void setCurrentAnimation(String uuid) {
-		if (animations.get(uuid) != null || current_anim == null) {
-			current_anim = uuid;
+	public void addAnimation(String uuid, Animation a) {
+		animations.put(uuid, a);
+	}
+
+	public Animation getAnimation(String uuid) {
+		if (animations.get(uuid) == null) {
+			Console.log("The requested Animation " + uuid
+					+ " is null in GraphicsComponent", in.INFO);
 		}
+		return animations.get(uuid);
+	}
+
+	public Animation getCurrentAnimation() {
+		return animations.get(current_anim);
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public BufferedImage getImage() {
+		return animations.get(current_anim).getImage();
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public boolean isOutside(int xx, int yy, int wwidth, int hheight) {
+		PhysicsComponent p = modify.get(PhysicsComponent.class);
+		return p.getX() + width < xx || p.getY() + height < yy
+				|| p.getX() > wwidth || p.getY() > hheight;
 	}
 
 	public boolean isWithin(ReferenceFrame v) {
@@ -38,51 +66,23 @@ public class GraphicsComponent extends Component {
 				.getY() + v.getHeight());
 	}
 
-	public boolean isOutside(int xx, int yy, int wwidth, int hheight) {
-		PhysicsComponent p = modify.get(PhysicsComponent.class);
-		return p.getX() + width < xx || p.getY() + height < yy
-				|| p.getX() > wwidth || p.getY() > hheight;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
+	public void setCurrentAnimation(String uuid) {
+		if (animations.get(uuid) != null || current_anim == null) {
+			current_anim = uuid;
+		}
 	}
 
 	public void setHeight(int height) {
 		this.height = height;
 	}
 
-	public Animation getCurrentAnimation() {
-		return animations.get(current_anim);
-	}
-
-	public void addAnimation(String uuid, Animation a) {
-		animations.put(uuid, a);
-	}
-
-	public Animation getAnimation(String uuid) {
-		if (animations.get(uuid) == null) {
-			Console.log("The requested Animation " + uuid
-					+ " is null in GraphicsComponent", in.INFO);
-		}
-		return animations.get(uuid);
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
 	@Override
 	public void update() {
 
-	}
-
-	public BufferedImage getImage() {
-		return animations.get(current_anim).getImage();
 	}
 
 }

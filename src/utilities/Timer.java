@@ -1,6 +1,5 @@
 package utilities;
 
-
 public class Timer {
 	private long start, end, delay;
 	private Functor f;
@@ -15,10 +14,12 @@ public class Timer {
 		this.f = f;
 	}
 
-	private void set(long ms) {
-		delay = ms;
-		start = System.currentTimeMillis();
-		end = start + delay;
+	public boolean check() {
+		return System.nanoTime() > end;
+	}
+
+	public boolean isDone() {
+		return done;
 	}
 
 	public void update() {
@@ -26,17 +27,15 @@ public class Timer {
 			if (System.currentTimeMillis() > end) {
 				f.execute();
 				f = null;
-				done  = true;
+				done = true;
 			}
 		}
 	}
 
-	public boolean check() {
-		return System.nanoTime() > end;
-	}
-
-	public boolean isDone() {
-		return done;
+	private void set(long ms) {
+		delay = ms;
+		start = System.currentTimeMillis();
+		end = start + delay;
 	}
 
 }

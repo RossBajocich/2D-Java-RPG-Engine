@@ -1,6 +1,5 @@
 package game;
 
-
 public class Menu {
 	enum direction {
 		UP, DOWN

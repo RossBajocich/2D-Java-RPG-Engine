@@ -20,33 +20,34 @@ import elements.Prop;
 
 public class TypeMaker {
 
-	static HashMap<Integer, Player> players = new HashMap<Integer, Player>();
-	static HashMap<Integer, Item> items = new HashMap<Integer, Item>();
-	static HashMap<Integer, Decoration> decorations = new HashMap<Integer, Decoration>();
-	static HashMap<Integer, Prop> props = new HashMap<Integer, Prop>();
 	static HashMap<Integer, Container> containers = new HashMap<Integer, Container>();
+	static HashMap<Integer, Decoration> decorations = new HashMap<Integer, Decoration>();
+	static HashMap<Integer, Item> items = new HashMap<Integer, Item>();
+	static HashMap<Integer, Player> players = new HashMap<Integer, Player>();
+	static HashMap<Integer, Prop> props = new HashMap<Integer, Prop>();
 
-	public static void addPlayer(int id, Player p) {
-		players.put(id, p);
-	}
-
-	public static void addItem(int id, Item i) {
-		items.put(id, i);
-	}
-
-	public static void addDecoration(int id, Decoration d) {
-		decorations.put(id, d);
-	}
-
-	public static void addProp(int id, Prop i) {
-		props.put(id, i);
-	}
-
-	public static void addContainer(int id, Container c) {
+	public static void addContainer(final int id, final Container c) {
 		containers.put(id, c);
 	}
 
-	public static Member createElement(int id, int x, int y, ElementData ed) {
+	public static void addDecoration(final int id, final Decoration d) {
+		decorations.put(id, d);
+	}
+
+	public static void addItem(final int id, final Item i) {
+		items.put(id, i);
+	}
+
+	public static void addPlayer(final int id, final Player p) {
+		players.put(id, p);
+	}
+
+	public static void addProp(final int id, final Prop i) {
+		props.put(id, i);
+	}
+
+	public static Member createElement(final int id, final int x, final int y,
+			final ElementData ed) {
 		Member e = null;
 
 		switch (ed.elementType.toLowerCase()) {
@@ -57,13 +58,11 @@ public class TypeMaker {
 			e = decorations.get(id).clone();
 			break;
 		case "player":
-			Player t = players.get(id);
-			Player p = new Player(
-					((PhysicsComponent) t.get(PhysicsComponent.class)),
-					((GraphicsComponent) t.get(GraphicsComponent.class)),
-					((InteractComponent) t.get(InteractComponent.class)),
-					((AttackComponent) t.get(AttackComponent.class)),
-					((InputComponent) t.get(InputComponent.class)));
+			final Player t = players.get(id);
+			final Player p = new Player(t.get(PhysicsComponent.class),
+					t.get(GraphicsComponent.class),
+					t.get(InteractComponent.class),
+					t.get(AttackComponent.class), t.get(InputComponent.class));
 			if (ed.mainPlayer) {
 				ed.level.setMainPlayer(p);
 				p.setMainPlayer(ed.mainPlayer);
@@ -85,10 +84,10 @@ public class TypeMaker {
 			return null;
 		}
 
-		((PhysicsComponent) e.get(PhysicsComponent.class)).setX(x);
-		((PhysicsComponent) e.get(PhysicsComponent.class)).setY(y);
+		e.get(PhysicsComponent.class).setX(x);
+		e.get(PhysicsComponent.class).setY(y);
 		e.setLevel(ed.level);
-
+		e.setName(ed.name);
 		return e;
 	}
 }

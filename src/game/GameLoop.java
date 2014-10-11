@@ -18,16 +18,12 @@ public class GameLoop implements Runnable {
 		return running;
 	}
 
-	public void setRunning(boolean state) {
-		running = state;
-	}
-
 	public void run() {
 		start = System.nanoTime();
-		
-		//run one step in game
+
+		// run one step in game
 		g.update();
-		
+
 		end = System.nanoTime();
 		double diff = end - start;
 
@@ -39,5 +35,9 @@ public class GameLoop implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void setRunning(boolean state) {
+		running = state;
 	}
 }

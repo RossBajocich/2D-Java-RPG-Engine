@@ -19,20 +19,11 @@ public class Item extends Member {
 		interact.setModify(this);
 	}
 
-	public Stats getStats() {
-		return stats;
-	}
-
-	public void setStats(Stats s) {
-		stats = s;
-	}
-
 	@Override
 	public Member clone() {
-		Item i = new Item(
-				(PhysicsComponent) components.get(PhysicsComponent.class),
-				(GraphicsComponent) components.get(GraphicsComponent.class),
-				(ItemInteract) components.get(ItemInteract.class));
+		Item i = new Item(this.get(PhysicsComponent.class),
+				this.get(GraphicsComponent.class),
+				(ItemInteract) this.get(ItemInteract.class));
 		i.stats = stats;
 		i.name = name;
 		i.type = type;
@@ -40,6 +31,14 @@ public class Item extends Member {
 		super.copy(i);
 
 		return i;
+	}
+
+	public Stats getStats() {
+		return stats;
+	}
+
+	public void setStats(Stats s) {
+		stats = s;
 	}
 
 	@Override

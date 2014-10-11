@@ -21,8 +21,24 @@ public class Animation {
 		this.loop = loop;
 	}
 
-	public void setRunning(boolean state) {
-		running = state;
+	public void addImage(String b) {
+		images.add(b);
+		Images.load(b, EXT.NONE);
+	}
+
+	public BufferedImage getImage() {
+		if (running) {
+			return getNext();
+		}
+		return Images.get(images.get(index));
+	}
+
+	public BufferedImage getPrevious() {
+		index--;
+		if (index < 0) {
+			index = images.size();
+		}
+		return Images.get(images.get(index));
 	}
 
 	public boolean isRunning() {
@@ -33,9 +49,19 @@ public class Animation {
 		images = input;
 	}
 
-	public void addImage(String b) {
-		images.add(b);
-		Images.load(b, EXT.NONE);
+	public void setIndex(int i) {
+		if (i > 0 && i <= images.size()) {
+			index = i;
+			return;
+		}
+		Console.log("The input index " + i
+				+ " does not fit inside the images with size " + images.size(),
+				in.ERROR);
+
+	}
+
+	public void setRunning(boolean state) {
+		running = state;
 	}
 
 	private BufferedImage getNext() {
@@ -54,31 +80,5 @@ public class Animation {
 			}
 		}
 		return Images.get(images.get(index));
-	}
-
-	public BufferedImage getImage() {
-		if (running) {
-			return getNext();
-		}
-		return Images.get(images.get(index));
-	}
-
-	public BufferedImage getPrevious() {
-		index--;
-		if (index < 0) {
-			index = images.size();
-		}
-		return Images.get(images.get(index));
-	}
-
-	public void setIndex(int i) {
-		if (i > 0 && i <= images.size()) {
-			index = i;
-			return;
-		}
-		Console.log("The input index " + i
-				+ " does not fit inside the images with size " + images.size(),
-				in.ERROR);
-
 	}
 }

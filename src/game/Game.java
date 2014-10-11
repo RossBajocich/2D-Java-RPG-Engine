@@ -11,18 +11,16 @@ import utilities.Keyboard;
 import utilities.Mouse;
 
 public class Game {
-	Mouse m;
-	HUD hud;
-	World w;
-
-	Menu menu;
-	private GameState state;
-
-	private RenderLoop render_loop;
-
 	public enum GameState {
 		RUNNING, PAUSED
 	}
+	private Mouse m;
+	private HUD hud;
+	private World w;
+	private Menu menu;
+	private GameState state;
+
+	private RenderLoop render_loop;
 
 	public Game(RenderManager rm, Mouse m) {
 		this.m = m;
@@ -39,17 +37,17 @@ public class Game {
 		render_loop = new RenderLoop(rm, w, hud);
 	}
 
-	public void setState(GameState s) {
-		state = s;
+	public HUD getHUD() {
+		// TODO Auto-generated method stub
+		return hud;
 	}
 
 	public GameState getState() {
 		return state;
 	}
 
-	public HUD getHUD() {
-		// TODO Auto-generated method stub
-		return hud;
+	public void setState(GameState s) {
+		state = s;
 	}
 
 	public void update() {

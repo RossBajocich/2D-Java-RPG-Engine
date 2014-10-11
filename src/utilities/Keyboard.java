@@ -10,29 +10,8 @@ public class Keyboard implements KeyListener {
 	private static boolean[] keys = new boolean[512];;
 	private static List<Integer> pressed = new ArrayList<Integer>();
 
-	public static int KEY_UP = KeyEvent.VK_W, KEY_DOWN = KeyEvent.VK_S, KEY_LEFT  = KeyEvent.VK_D, KEY_RIGHT = KeyEvent.VK_A;
-
-	public void keyTyped(KeyEvent e) {
-	}
-
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() >= 0 && e.getKeyCode() < keys.length) {
-			keys[e.getKeyCode()] = true;
-		}
-		keys[KeyEvent.VK_SHIFT] = e.isShiftDown();
-		keys[KeyEvent.VK_ALT] = e.isAltDown();
-		keys[KeyEvent.VK_CONTROL] = e.isControlDown();
-	}
-
-	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() >= 0 && e.getKeyCode() < keys.length) {
-			keys[e.getKeyCode()] = false;
-		}
-		keys[KeyEvent.VK_SHIFT] = e.isShiftDown();
-		keys[KeyEvent.VK_ALT] = e.isAltDown();
-		keys[KeyEvent.VK_CONTROL] = e.isControlDown();
-
-	}
+	public static int KEY_UP = KeyEvent.VK_W, KEY_DOWN = KeyEvent.VK_S,
+			KEY_LEFT = KeyEvent.VK_D, KEY_RIGHT = KeyEvent.VK_A;
 
 	public static boolean getKey(int k) {
 		if (k >= 0 && k < keys.length) {
@@ -57,6 +36,28 @@ public class Keyboard implements KeyListener {
 			}
 		}
 		return pressed;
+	}
+
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() >= 0 && e.getKeyCode() < keys.length) {
+			keys[e.getKeyCode()] = true;
+		}
+		keys[KeyEvent.VK_SHIFT] = e.isShiftDown();
+		keys[KeyEvent.VK_ALT] = e.isAltDown();
+		keys[KeyEvent.VK_CONTROL] = e.isControlDown();
+	}
+
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode() >= 0 && e.getKeyCode() < keys.length) {
+			keys[e.getKeyCode()] = false;
+		}
+		keys[KeyEvent.VK_SHIFT] = e.isShiftDown();
+		keys[KeyEvent.VK_ALT] = e.isAltDown();
+		keys[KeyEvent.VK_CONTROL] = e.isControlDown();
+
+	}
+
+	public void keyTyped(KeyEvent e) {
 	}
 
 }

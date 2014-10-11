@@ -5,9 +5,9 @@ import gui.Screen;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import components.AttackComponent;
-
 import characters.Player;
+
+import components.AttackComponent;
 
 public class HBars extends HElement {
 
@@ -20,21 +20,6 @@ public class HBars extends HElement {
 		this.p = p;
 	}
 
-	public void setColorsHp(Color bg1, Color fg1) {
-		this.hp1 = bg1;
-		this.hp2 = fg1;
-	}
-
-	public void setColorsMana(Color bg2, Color fg2) {
-		this.mana1 = bg2;
-		this.mana2 = fg2;
-	}
-
-	public void setColorsAttk(Color bg2, Color fg2) {
-		this.attk1 = bg2;
-		this.attk2 = fg2;
-	}
-
 	@Override
 	public void draw(Screen s) {
 		Graphics gMain = s.getGraphics();
@@ -45,19 +30,16 @@ public class HBars extends HElement {
 			gMain.fillRect(x, y, barW, barH);
 
 			gMain.setColor(hp2);
-			double temp = (((AttackComponent) p.get(AttackComponent.class))
-					.getMaxHealth() / ((AttackComponent) p
-					.get(AttackComponent.class)).getMaxHealth())
-					* barW;
+			double temp = ((p.get(AttackComponent.class)).getMaxHealth() / (p
+					.get(AttackComponent.class)).getMaxHealth()) * barW;
 			gMain.fillRect(x, y, (int) temp, barH);
 
 			gMain.setColor(Color.black);
 			gMain.drawRect(x, y, barW, barH);
 
 			gMain.drawString(
-					"hp: "
-							+ ((AttackComponent) p.get(AttackComponent.class))
-									.getMaxHealth(), x + 5, y + 18);
+					"hp: " + (p.get(AttackComponent.class)).getMaxHealth(),
+					x + 5, y + 18);
 
 			int y1 = y + barH;
 			// mana
@@ -65,8 +47,8 @@ public class HBars extends HElement {
 			gMain.fillRect(x, y1, barW, barH);
 
 			gMain.setColor(mana2);
-			temp = (p.getStats().mana / ((AttackComponent) p
-					.get(AttackComponent.class)).getMaxMana()) * barW;
+			temp = (p.getStats().mana / (p.get(AttackComponent.class))
+					.getMaxMana()) * barW;
 			gMain.fillRect(x, y1, (int) temp, barH);
 
 			gMain.setColor(Color.black);
@@ -81,10 +63,24 @@ public class HBars extends HElement {
 			gMain.fillRect(x, y1, barW, barH);
 
 			gMain.setColor(attk2);
-			temp = ((AttackComponent) p.get(AttackComponent.class))
-					.getWaitRatio() * barW;
+			temp = (p.get(AttackComponent.class)).getWaitRatio() * barW;
 			gMain.fillRect(x, y1, (int) temp, barH);
 		}
+	}
+
+	public void setColorsAttk(Color bg2, Color fg2) {
+		this.attk1 = bg2;
+		this.attk2 = fg2;
+	}
+
+	public void setColorsHp(Color bg1, Color fg1) {
+		this.hp1 = bg1;
+		this.hp2 = fg1;
+	}
+
+	public void setColorsMana(Color bg2, Color fg2) {
+		this.mana1 = bg2;
+		this.mana2 = fg2;
 	}
 
 	@Override

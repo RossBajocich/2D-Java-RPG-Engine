@@ -21,6 +21,7 @@ import utilities.Console;
 import utilities.Console.in;
 import utilities.Stats;
 import characters.Player;
+
 import components.AttackComponent;
 import components.ContainerInteract;
 import components.GraphicsComponent;
@@ -28,6 +29,7 @@ import components.InteractComponent;
 import components.ItemInteract;
 import components.NPCInput;
 import components.PhysicsComponent;
+
 import elements.Decoration;
 import elements.Member;
 import elements.Prop;
@@ -64,56 +66,6 @@ public class XmlParser {
 		}
 	}
 
-	private static void parseDocument() {
-		// get the root element
-		Element docEle = domBounds.getDocumentElement();
-		docEle.normalize();
-		System.out.println("Root element :" + docEle.getNodeName());
-
-		NodeList bl = docEle.getElementsByTagName("Bound");
-		if (bl != null && bl.getLength() > 0) {
-			for (int i = 0; i < bl.getLength(); i++) {
-
-				// get the employee element
-				Element el = (Element) bl.item(i);
-
-				// get the Employee object
-				Bounds e = getBounds(el);
-
-				// add it to list
-				bounds.put(el.getAttribute("type"), e);
-			}
-		} else {
-			Console.log("Bounds never ran!", in.INFO);
-		}
-
-		docEle = dom.getDocumentElement();
-		docEle.normalize();
-		System.out.println("Root element :" + docEle.getNodeName());
-
-		NodeList nl = docEle.getElementsByTagName("Member");
-		if (nl != null && nl.getLength() > 0) {
-			for (int i = 0; i < nl.getLength(); i++) {
-
-				// get the employee element
-				Element el = (Element) nl.item(i);
-
-				// get the Employee object
-				Member e = getMember(el);
-
-				if (e == null) {
-					Console.log("Member is null!!", in.ERROR);
-				} else {
-					// add it to list
-					members.add(e);
-				}
-			}
-		} else {
-			Console.log("Members never ran!", in.INFO);
-		}
-		Console.log("sizeof members: " + members.size(), in.INFO);
-	}
-
 	private static Bounds getBounds(Element data) {
 		int bw, bh, bx, by;
 
@@ -124,6 +76,26 @@ public class XmlParser {
 		bh = getIntValue(data, "bh");
 
 		return new Bounds(bx, by, bw, bh);
+	}
+
+	/**
+	 * Calls getTextValue and returns a int value
+	 */
+	private static int getIntValue(Element ele, String tagName) {
+		// in production application you would catch the exception
+		int val = 0;
+		try {
+			if (getTextValue(ele, tagName) == null) {
+				return 0;
+			}
+			val = Integer.parseInt(getTextValue(ele, tagName));
+		} catch (Exception e) {
+			Console.log(
+					"Parse int failed! @getIntValue for tagName " + tagName,
+					in.ERROR);
+			return INT_VALUE_FAIL;
+		}
+		return val;
 	}
 
 	/**
@@ -187,8 +159,8 @@ public class XmlParser {
 			Player p = new Player(physics, graphics, new InteractComponent(),
 					new AttackComponent(), new NPCInput());
 
-			((AttackComponent) p.get(AttackComponent.class)).setHealth(health);
-			((AttackComponent) p.get(AttackComponent.class)).setMana(mana);
+			(p.get(AttackComponent.class)).setHealth(health);
+			(p.get(AttackComponent.class)).setMana(mana);
 
 			Stats ps = new Stats();
 
@@ -208,7 +180,8 @@ public class XmlParser {
 
 			return p;
 		case "Container":
-			Container container = new Container(physics, graphics, new ContainerInteract());
+			Container container = new Container(physics, graphics,
+					new ContainerInteract());
 			container.setType(type);
 			container.setSize(size);
 			container.setName(name);
@@ -272,23 +245,53 @@ public class XmlParser {
 		return textVal;
 	}
 
-	/**
-	 * Calls getTextValue and returns a int value
-	 */
-	private static int getIntValue(Element ele, String tagName) {
-		// in production application you would catch the exception
-		int val = 0;
-		try {
-			if (getTextValue(ele, tagName) == null) {
-				return 0;
+	private static void parseDocument() {
+		// get the root element
+		Element docEle = domBounds.getDocumentElement();
+		docEle.normalize();
+		System.out.println("Root element :" + docEle.getNodeName());
+
+		NodeList bl = docEle.getElementsByTagName("Bound");
+		if (bl != null && bl.getLength() > 0) {
+			for (int i = 0; i < bl.getLength(); i++) {
+
+				// get the employee element
+				Element el = (Element) bl.item(i);
+
+				// get the Employee object
+				Bounds e = getBounds(el);
+
+				// add it to list
+				bounds.put(el.getAttribute("type"), e);
 			}
-			val = Integer.parseInt(getTextValue(ele, tagName));
-		} catch (Exception e) {
-			Console.log(
-					"Parse int failed! @getIntValue for tagName " + tagName,
-					in.ERROR);
-			return INT_VALUE_FAIL;
+		} else {
+			Console.log("Bounds never ran!", in.INFO);
 		}
-		return val;
+
+		docEle = dom.getDocumentElement();
+		docEle.normalize();
+		System.out.println("Root element :" + docEle.getNodeName());
+
+		NodeList nl = docEle.getElementsByTagName("Member");
+		if (nl != null && nl.getLength() > 0) {
+			for (int i = 0; i < nl.getLength(); i++) {
+
+				// get the employee element
+				Element el = (Element) nl.item(i);
+
+				// get the Employee object
+				Member e = getMember(el);
+
+				if (e == null) {
+					Console.log("Member is null!!", in.ERROR);
+				} else {
+					// add it to list
+					members.add(e);
+				}
+			}
+		} else {
+			Console.log("Members never ran!", in.INFO);
+		}
+		Console.log("sizeof members: " + members.size(), in.INFO);
 	}
 }

@@ -7,14 +7,14 @@ import javax.swing.JFrame;
 import utilities.Console;
 
 public class RenderManager implements Runnable {
-	private JFrame parent;
-	private VolatileScreen main;
-	private EnumMap<ScreenLayer, Screen> screens = new EnumMap<ScreenLayer, Screen>(
-			ScreenLayer.class);
-
 	public enum ScreenLayer {
 		MAIN, HUD
 	}
+	private JFrame parent;
+	private VolatileScreen main;
+
+	private EnumMap<ScreenLayer, Screen> screens = new EnumMap<ScreenLayer, Screen>(
+			ScreenLayer.class);
 
 	public RenderManager(JFrame parent) {
 		this.parent = parent;
@@ -22,13 +22,24 @@ public class RenderManager implements Runnable {
 				this);
 	}
 
+	public void addScreen(ScreenLayer key, Screen s) {
+		screens.put(key, s); // TODO: Cannot have multiple screens for the same
+								// key (supposed to be depth..)
+	}
+
+	public VolatileScreen getMain() {
+		return main;
+	}
+
 	public JFrame getWindow() {
 		return parent;
 	}
 
-	public void addScreen(ScreenLayer key, Screen s) {
-		screens.put(key, s); // TODO: Cannot have multiple screens for the same
-								// key (supposed to be depth..)
+	public void reset() {
+		main.reset();
+		for (Screen s : screens.values()) {
+			s.reset();
+		}
 	}
 
 	public void run() {
@@ -43,16 +54,5 @@ public class RenderManager implements Runnable {
 		}
 		parent.getGraphics().drawImage(main.getImage(), 0, 25,
 				parent.getWidth(), parent.getHeight() - 25, null);
-	}
-
-	public void reset() {
-		main.reset();
-		for (Screen s : screens.values()) {
-			s.reset();
-		}
-	}
-
-	public VolatileScreen getMain() {
-		return main;
 	}
 }

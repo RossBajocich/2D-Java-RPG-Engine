@@ -31,22 +31,6 @@ public class ReferenceFrame {
 		this.current_level = current_level;
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
 	public void draw(int window_x, int window_y, int window_width,
 			int window_height, Graphics g, Level level) {
 
@@ -56,8 +40,7 @@ public class ReferenceFrame {
 
 		for (List<Member> l : level.getRenders().values()) {
 			for (Member m : l) {
-				if (((GraphicsComponent) m.get(GraphicsComponent.class))
-						.isWithin(this)) {
+				if ((m.get(GraphicsComponent.class)).isWithin(this)) {
 					drawMember(window_x, window_y, window_width, window_height,
 							m, g);
 
@@ -68,6 +51,22 @@ public class ReferenceFrame {
 				}
 			}
 		}
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
 	}
 
 	private void drawBars(int window_x, int window_y, int window_width,
@@ -85,8 +84,7 @@ public class ReferenceFrame {
 				(int) (barH * window_height) / this.height);
 
 		gMain.setColor(Color.green);
-		double temp = ((((double) ((AttackComponent) p
-				.get(AttackComponent.class)).getHealth() / ((AttackComponent) p
+		double temp = ((((double) (p.get(AttackComponent.class)).getHealth() / (p
 				.get(AttackComponent.class)).getMaxHealth()) * barW) * window_width)
 				/ this.width;
 		gMain.fillRect((x1 * window_width) / this.width, (y1 * window_height)
@@ -98,13 +96,8 @@ public class ReferenceFrame {
 				/ this.height, (int) (barW * window_width) / this.width,
 				(int) (barH * window_height) / this.height);
 
-		gMain.drawString(
-				"hp: "
-						+ ((AttackComponent) p.get(AttackComponent.class))
-								.getHealth()
-						+ " / "
-						+ ((AttackComponent) p.get(AttackComponent.class))
-								.getMaxHealth(),
+		gMain.drawString("hp: " + (p.get(AttackComponent.class)).getHealth()
+				+ " / " + (p.get(AttackComponent.class)).getMaxHealth(),
 				(((x1 + 5) * window_width) / this.width),
 				(((y1 + 12) * window_height) / this.height));
 
@@ -116,8 +109,8 @@ public class ReferenceFrame {
 				/ this.height, (int) barW, barH);
 
 		gMain.setColor(Color.blue);
-		temp = ((((AttackComponent) p.get(AttackComponent.class))
-				.getWaitRatio() * barW) * window_width) / this.width;
+		temp = (((p.get(AttackComponent.class)).getWaitRatio() * barW) * window_width)
+				/ this.width;
 		gMain.fillRect((x1 * window_width) / this.width, (y1 * window_height)
 				/ this.height, (int) temp, barH);
 
@@ -141,8 +134,7 @@ public class ReferenceFrame {
 				// debug
 				gMain.setColor(Color.red);
 				((Graphics2D) gMain).setStroke(new BasicStroke(2));
-				Rectangle r = ((PhysicsComponent) e.get(PhysicsComponent.class))
-						.getBoundsRect();
+				Rectangle r = (e.get(PhysicsComponent.class)).getBoundsRect();
 				gMain.drawRect((int) ((r.x - this.x) * window_width)
 						/ this.width, (int) ((r.y - this.y) * window_height)
 						/ this.height, (int) (r.width * window_width)

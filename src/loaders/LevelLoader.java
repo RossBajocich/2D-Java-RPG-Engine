@@ -1,5 +1,8 @@
 package loaders;
 
+import elements.Member;
+import game.Level;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,8 +11,6 @@ import java.io.IOException;
 
 import utilities.Console;
 import utilities.Console.in;
-import elements.Member;
-import game.Level;
 
 public class LevelLoader {
 
@@ -43,7 +44,8 @@ public class LevelLoader {
 						level.setHeight(Integer.parseInt(data[3]));
 						level.setBackground(data[4]);
 						XmlParser.parseXmlFile(name + ".xml");
-						Console.log("there are " + TypeMaker.players.size() + " players loaded now", in.INFO);
+						Console.log("there are " + TypeMaker.players.size()
+								+ " players loaded now", in.INFO);
 						continue; // so that n isn't incremented
 					} else {
 						id = Integer.parseInt(data[1]);
@@ -65,17 +67,17 @@ public class LevelLoader {
 						// item things
 					}
 					ed.elementType = data[0].trim();
-					if(ed.elementType.equalsIgnoreCase("NPC")){
+					if (ed.elementType.equalsIgnoreCase("NPC")) {
 						ed.elementType = "Player";
 					}
 					ed.level = level;
 					e = TypeMaker.createElement(id, x, y, ed);
-					
+
 					if (e == null) {
 						Console.log("Uknown or empty line...", Console.in.ERROR);
 						continue; // break so n is not incremented on error
 					}
-					
+
 					level.addMember(e);
 					Console.log("Member " + e.getName() + " was added", in.INFO);
 				} catch (Exception e) {

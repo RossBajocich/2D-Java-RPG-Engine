@@ -10,7 +10,7 @@ public class NPCAttack extends AttackComponent {
 
 	public void onAttack(Player p) {
 		if (!isDead()) {
-			((NPCInput) modify.get(NPCInput.class)).setChasing(p);
+			(modify.get(NPCInput.class)).setChasing(p);
 		}
 	}
 }

@@ -20,10 +20,6 @@ public class Mouse extends MouseAdapter {
 		return a.getLocation();
 	}
 
-	public void mousePressed(MouseEvent e) {
-		g.getHUD().onMousePressed(e);
-	}
-
 	public void mouseClicked(MouseEvent e) {
 	}
 
@@ -31,6 +27,10 @@ public class Mouse extends MouseAdapter {
 	}
 
 	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mousePressed(MouseEvent e) {
+		g.getHUD().onMousePressed(e);
 	}
 
 	public void mouseReleased(MouseEvent e) {

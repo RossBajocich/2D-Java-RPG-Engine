@@ -1,6 +1,5 @@
 package game;
 
-
 public class Position {
 	public double x, y;
 

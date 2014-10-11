@@ -3,14 +3,14 @@ package characters;
 import graphics.Animation;
 import items.Container;
 import loaders.ResourceLoader;
-import utilities.Console;
-import utilities.Console.in;
 import utilities.Stats;
+
 import components.AttackComponent;
 import components.GraphicsComponent;
 import components.InputComponent;
 import components.InteractComponent;
 import components.PhysicsComponent;
+
 import elements.Member;
 
 public class Player extends Member {
@@ -33,6 +33,35 @@ public class Player extends Member {
 		init();
 	}
 
+	public Member clone() {
+		// This is null because copy(Player p) copies all components through the
+		// super()
+		Player p = new Player(null, null, null, null, null);
+		copy(p);
+		return p;
+	}
+
+	public void copy(Player p) {
+
+		p.container = container;
+
+		p.stats = stats;
+		super.copy(p);
+	}
+
+	public Container getContainer() {
+		return container;
+	}
+
+	public Stats getStats() {
+		Stats ps = new Stats(stats);
+		if (container != null) {
+			// Has a container at this point
+			ps.add(container.getStats());
+		}
+		return ps;
+	}
+
 	public void init() {
 		Animation left_walk, right_walk, up_walk, down_walk;
 		Animation die;
@@ -49,8 +78,7 @@ public class Player extends Member {
 		die = new Animation(1000, false);
 		die.addImage("dead.png");
 
-		GraphicsComponent graphics = (GraphicsComponent) components
-				.get(GraphicsComponent.class);
+		GraphicsComponent graphics = this.get(GraphicsComponent.class);
 
 		graphics.addAnimation("left_walk", left_walk);
 		graphics.addAnimation("right_walk", right_walk);
@@ -61,64 +89,33 @@ public class Player extends Member {
 		graphics.setCurrentAnimation("down_walk");
 	}
 
-	public void update() {
-		if (container != null) {
-			((PhysicsComponent) container.get(PhysicsComponent.class))
-					.setX(((PhysicsComponent) components
-							.get(PhysicsComponent.class)).getX());
-			((PhysicsComponent) container.get(PhysicsComponent.class))
-					.setY(((PhysicsComponent) components
-							.get(PhysicsComponent.class)).getY());
-		}
-		super.update();
-	}
-
 	public boolean isMainPlayer() {
 		return mainPlayer;
+	}
+
+	public void setContainer(Container b) {
+		this.container = b;
+		// container.setSize(container.getSize() + temp.getSize());
+		// for (Item i : temp.getItems()) {
+		// container.addItem(i);
+		// }
 	}
 
 	public void setMainPlayer(boolean state) {
 		mainPlayer = state;
 	}
 
-	public void setContainer(Container b) {
-		this.container = b;
-		//container.setSize(container.getSize() + temp.getSize());
-		//for (Item i : temp.getItems()) {
-		//	container.addItem(i);
-		//}
-	}
-
-	public Container getContainer() {
-		return container;
-	}
-
-	public Stats getStats() {
-		Stats ps = new Stats(stats);
-		if (container != null) {
-			// Has a container at this point
-			ps.add(container.getStats());
-		}
-		return ps;
-	}
-
 	public void setStats(Stats stats) {
 		this.stats = stats;
 	}
 
-	public Member clone() {
-		// This is null because copy(Player p) copies all components through the
-		// super()
-		Player p = new Player(null, null, null, null, null);
-		copy(p);
-		return p;
-	}
-
-	public void copy(Player p) {
-
-		p.container = container;
-
-		p.stats = stats;
-		super.copy(p);
+	public void update() {
+		if (container != null) {
+			container.get(PhysicsComponent.class).setX(
+					(this.get(PhysicsComponent.class)).getX());
+			container.get(PhysicsComponent.class).setY(
+					(this.get(PhysicsComponent.class)).getY());
+		}
+		super.update();
 	}
 }

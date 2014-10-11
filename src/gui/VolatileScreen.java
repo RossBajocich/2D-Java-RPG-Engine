@@ -15,14 +15,14 @@ public class VolatileScreen extends Screen {
 		img = manager.getWindow().createVolatileImage(width, height);
 	}
 
+	public VolatileImage getImage() {
+		return (VolatileImage) img;
+	}
+
 	@Override
 	public void reset() {
 		graphics = img.getGraphics();
 		graphics.setColor(Color.RED);
 		graphics.fillRect(0, 0, width, height);
-	}
-	
-	public VolatileImage getImage() {
-		return (VolatileImage) img;
 	}
 }

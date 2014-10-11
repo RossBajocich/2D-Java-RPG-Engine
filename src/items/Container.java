@@ -6,10 +6,12 @@ import java.util.Random;
 
 import utilities.Console;
 import utilities.Stats;
+
 import components.ContainerInteract;
 import components.GraphicsComponent;
 import components.InteractComponent;
 import components.PhysicsComponent;
+
 import elements.Member;
 
 public class Container extends Member {
@@ -25,14 +27,6 @@ public class Container extends Member {
 		this.components.put(InteractComponent.class, interact);
 	}
 
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	public void changeSize(int add) {
-		size += add;
-	}
-
 	public void addItem(Item item) {
 		if (count + 1 < size) {
 			items.add(item);
@@ -44,29 +38,68 @@ public class Container extends Member {
 		}
 	}
 
+	public void changeSize(int add) {
+		size += add;
+	}
+
+	@Override
+	public Member clone() {
+		Container c = new Container(this.get(PhysicsComponent.class),
+				this.get(GraphicsComponent.class),
+				(ContainerInteract) this.get(InteractComponent.class));
+		for (Item i : items) {
+			c.addItem(i);
+		}
+		c.updateStats();
+		c.type = type;
+		c.count = count;
+		c.size = size;
+		c.stats = stats;
+
+		super.copy(c);
+
+		return c;
+	}
+
+	public void dropItem(Item key) {
+		Random r = new Random();
+
+		PhysicsComponent physics = this.get(PhysicsComponent.class);
+		GraphicsComponent graphics = this.get(GraphicsComponent.class);
+
+		// Not correct, need to fix this to use the players values
+		key.get(PhysicsComponent.class).setX(
+				physics.getX() + r.nextInt(graphics.getWidth()));
+		key.get(PhysicsComponent.class).setY(
+				physics.getY() + r.nextInt(graphics.getHeight()));
+
+		level.addMember(key);
+
+		removeItem(key);
+	}
+
 	public void dropItems() {
 		for (Item key : items) {
 			dropItem(key);
 		}
 	}
 
-	public void dropItem(Item key) {
-		Random r = new Random();
+	public List<Item> getItems() {
+		return items;
+	}
 
-		PhysicsComponent physics = (PhysicsComponent) components
-				.get(PhysicsComponent.class);
-		GraphicsComponent graphics = (GraphicsComponent) components
-				.get(GraphicsComponent.class);
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return size;
+	}
 
-		// Not correct, need to fix this to use the players values
-		((PhysicsComponent) key.get(PhysicsComponent.class)).setX(physics
-				.getX() + r.nextInt(graphics.getWidth()));
-		((PhysicsComponent) key.get(PhysicsComponent.class)).setY(physics
-				.getY() + r.nextInt(graphics.getHeight()));
+	public Stats getStats() {
+		return stats;
+	}
 
-		level.addMember(key);
-
-		removeItem(key);
+	public int getTotal() {
+		// TODO Auto-generated method stub
+		return count;
 	}
 
 	public void removeItem(Item item) {
@@ -77,18 +110,14 @@ public class Container extends Member {
 		updateStats();
 	}
 
-	public int getTotal() {
-		// TODO Auto-generated method stub
-		return count;
+	public void setSize(int size) {
+		this.size = size;
 	}
 
-	public int getSize() {
+	@Override
+	public void update() {
 		// TODO Auto-generated method stub
-		return size;
-	}
 
-	public List<Item> getItems() {
-		return items;
 	}
 
 	protected void updateStats() {
@@ -97,35 +126,5 @@ public class Container extends Member {
 		for (Item i : items) {
 			stats.add(i.getStats());
 		}
-	}
-
-	public Stats getStats() {
-		return stats;
-	}
-
-	@Override
-	public Member clone() {
-		Container c = new Container(
-				(PhysicsComponent) components.get(PhysicsComponent.class),
-				(GraphicsComponent) components.get(GraphicsComponent.class),
-				(ContainerInteract) components.get(InteractComponent.class));
-		for (Item i : items) {
-			c.addItem(i);
-		}
-		c.updateStats();
-		c.type = type;
-		c.count = count;
-		c.size = size;
-		c.stats = stats;
-		
-		super.copy(c);
-
-		return c;
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-
 	}
 }

@@ -3,8 +3,8 @@ package utilities;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-import utilities.Console.in;
 import loaders.ResourceLoader;
+import utilities.Console.in;
 
 public class Images {
 	public enum EXT {
@@ -23,6 +23,12 @@ public class Images {
 
 	static HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
 
+	public static void add(String id) {
+		if (!images.containsKey(id)) {
+			images.put(id, ResourceLoader.getImage(id));
+		}
+	}
+
 	public static BufferedImage get(String id) {
 		if (images.containsKey(id)) {
 			return images.get(id);
@@ -34,12 +40,6 @@ public class Images {
 	public static void load(String id, EXT t) {
 		if (!images.containsKey(id)) {
 			images.put(id, ResourceLoader.getImage(id + t.toString()));
-		}
-	}
-
-	public static void add(String id) {
-		if (!images.containsKey(id)) {
-			images.put(id, ResourceLoader.getImage(id));
 		}
 	}
 

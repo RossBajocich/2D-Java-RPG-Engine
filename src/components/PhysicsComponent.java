@@ -23,9 +23,42 @@ public class PhysicsComponent extends Component {
 		super();
 	}
 
-	@Override
-	public void update() {
+	public Bounds getBounds() {
+		return bounds;
+	}
 
+	public Rectangle getBoundsRect() {
+		return bounds.getRect((int) x, (int) y);
+	}
+
+	public Rectangle getBoundsRect(double x_move, double y_move) {
+		return bounds.getRect((int) (x + x_move), (int) (y + y_move));
+	}
+
+	public Direction getDirection() {
+		// TODO Auto-generated method stub
+		return dir;
+	}
+
+	public double getDistance(Member e) {
+		if (e != null) {
+			return Math.sqrt(Math.pow(
+					x - (e.get(PhysicsComponent.class)).getX(), 2)
+					+ Math.pow(y - (e.get(PhysicsComponent.class)).getY(), 2));
+		}
+		return 0;
+	}
+
+	public Position getPosition() {
+		return new Position(x, y);
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public double getY() {
+		return y;
 	}
 
 	public void move(Direction dir) {
@@ -35,7 +68,7 @@ public class PhysicsComponent extends Component {
 		} else {
 			change = 1.0;
 		}
-		
+
 		Level level = modify.getLevel();
 
 		switch (dir) {
@@ -64,24 +97,8 @@ public class PhysicsComponent extends Component {
 		}
 	}
 
-	public Rectangle getBoundsRect(double x_move, double y_move) {
-		return bounds.getRect((int) (x + x_move), (int) (y + y_move));
-	}
-
-	public Rectangle getBoundsRect() {
-		return bounds.getRect((int) x, (int) y);
-	}
-
-	public Bounds getBounds() {
-		return bounds;
-	}
-
-	public double getDistance(Member e) {
-		if (e != null) {
-			return Math.sqrt(Math.pow(x - ((PhysicsComponent)e.get(PhysicsComponent.class)).getX(), 2)
-					+ Math.pow(y - ((PhysicsComponent)e.get(PhysicsComponent.class)).getY(), 2));
-		}
-		return 0;
+	public void setBounds(Bounds b) {
+		bounds = b;
 	}
 
 	public void setX(double x) {
@@ -92,25 +109,9 @@ public class PhysicsComponent extends Component {
 		this.y = y;
 	}
 
-	public double getX() {
-		return x;
-	}
+	@Override
+	public void update() {
 
-	public double getY() {
-		return y;
-	}
-
-	public Position getPosition() {
-		return new Position(x, y);
-	}
-
-	public void setBounds(Bounds b) {
-		bounds = b;
-	}
-
-	public Direction getDirection() {
-		// TODO Auto-generated method stub
-		return dir;
 	}
 
 }

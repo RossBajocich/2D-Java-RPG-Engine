@@ -9,10 +9,8 @@ public class PlayerGraphics extends GraphicsComponent {
 	}
 
 	public void update() {
-		if (((PhysicsComponent) modify.get(PhysicsComponent.class))
-				.getDirection() != Direction.DOWN) {
-			switch (((PhysicsComponent) modify.get(PhysicsComponent.class))
-					.getDirection()) {
+		if ((modify.get(PhysicsComponent.class)).getDirection() != Direction.DOWN) {
+			switch ((modify.get(PhysicsComponent.class)).getDirection()) {
 			case DOWN:
 				setCurrentAnimation("down_walk");
 				break;
