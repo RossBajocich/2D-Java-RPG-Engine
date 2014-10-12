@@ -37,7 +37,6 @@
 	<Member type="Item">
 		<id>0</id>
 		<attack>10</attack>
-		<bounds>10x10</bounds>
 		<img>sword.png</img>
 		<width>10</width>
 		<height>10</height>
@@ -46,7 +45,8 @@
 	<Member type="Item">
 		<id>1</id>
 		<def>10</def>
-		<bounds>10x10</bounds>
+		<width>10</width>
+		<height>10</height>
 		<img>shield.png</img>
 		<parent>0</parent>
 		<size>1</size>
@@ -54,7 +54,8 @@
 	<Member type = "Container">
 		<id>0</id>
 		<size>10</size>
-		<bounds>10x10</bounds>
+		<width>10</width>
+		<height>10</height>
 		<img>backpack.png</img>
 		<name>backpack</name>
 	</Member>

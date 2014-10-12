@@ -18,13 +18,16 @@ import characters.Player;
 import components.GraphicsComponent;
 
 public class HContainer extends HElement {
-	Container b;
-	Player player;
+	private Container b;
+	private Player player;
+	private int nWidth, nHeight;
 
 	public HContainer(int x, int y, int width, int height, Player player) {
 		super(x, y, width, height);
 		this.b = player.getContainer();
 		this.player = player;
+		nWidth = width / 5;
+		nHeight = height / 10;
 	}
 
 	@Override
@@ -35,8 +38,6 @@ public class HContainer extends HElement {
 		int zx = 0, zy = 0;
 		if (b != null) {
 			for (Item i : b.getItems()) {
-				int nWidth = 20;
-				int nHeight = 20;
 				g.drawImage((i.get(GraphicsComponent.class)).getImage(), x
 						+ (zx * nWidth), y + (zy * nHeight), nWidth, nHeight,
 						null);
@@ -52,9 +53,37 @@ public class HContainer extends HElement {
 		g.drawRect(x, y, width, height);
 	}
 
+	@Override
+	public void update() {
+		b = player.getContainer();
+	}
+
+	private void drop(Point p) {
+		if (b != null && player != null) {
+			int zx = 0, zy = 0, px = 0;
+			for (Item i : b.getItems()) {
+				if (px > b.getTotal()) {
+					return;
+				}
+				Rectangle r = new Rectangle(x + (zx * nWidth), y
+						+ (zy * nHeight), nWidth, nHeight);
+				if (r.contains(p)) {
+					player.getContainer().dropItem(i);
+					return;
+				}
+				zx++;
+				if (zx * nWidth >= width) {
+					zx = 0;
+					zy++;
+				}
+				px++;
+			}
+		}
+	}
+
 	public void mouseClicked(MouseEvent e) {
 		drop(e.getPoint());
-		Console.log("Mouse clicked on the FUCKING BACKPACK", in.INFO);
+		Console.log("Mouse clicked on the BACKPACK", in.INFO);
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -63,33 +92,5 @@ public class HContainer extends HElement {
 
 	public void mouseReleased(MouseEvent e) {
 
-	}
-
-	@Override
-	public void update() {
-		b = player.getContainer();
-	}
-
-	private void drop(Point p) {
-		int zx = 0, zy = 0, px = 0;
-		for (Item i : b.getItems()) {
-			if (px > b.getTotal()) {
-				return;
-			}
-			int nWidth = 20;
-			int nHeight = 20;
-			Rectangle r = new Rectangle(x + (zx * nWidth), y + (zy * nHeight),
-					nWidth, nHeight);
-			if (HUD.isWithin(p, r)) {
-				player.getContainer().dropItem(i);
-				return;
-			}
-			zx++;
-			if (zx * nWidth >= width) {
-				zx = 0;
-				zy++;
-			}
-			px++;
-		}
 	}
 }

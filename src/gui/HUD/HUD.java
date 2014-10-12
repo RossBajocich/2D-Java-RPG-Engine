@@ -1,31 +1,25 @@
 package gui.HUD;
 
-import game.View;
 import game.World;
 import gui.Screen;
+import gui.Window;
 
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import loaders.ResourceLoader;
 import characters.Player;
 
-public class HUD {
-	World w;
-	List<HElement> elements = new ArrayList<HElement>();
-	View currentView;
+public class HUD implements MouseListener{
+	private World w;
+	private List<HElement> elements = new ArrayList<HElement>();
 
 	public HUD(World world, int width, int height) {
+		Window.get().addMouseListener(this);
 		w = world;
 		initialize(width, height);
-	}
-
-	public static boolean isWithin(Point p, Rectangle r) {
-		return (p.x >= r.x && p.y >= r.y && p.x <= r.x + r.width && p.y <= r.y
-				+ r.height);
 	}
 
 	public void addHUDElement(HElement e) {
@@ -35,42 +29,51 @@ public class HUD {
 	public List<HElement> getElements() {
 		return elements;
 	}
-
-	public void onMouseClicked(MouseEvent e) {
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
 		for (HElement h : elements) {
-			if (isWithin(e.getPoint(), h.getBounds())) {
-				h.mouseClicked(e);
-			}
-		}
-	}
-
-	public void onMousePressed(MouseEvent e) {
-		for (HElement h : elements) {
-			if (isWithin(e.getPoint(), h.getBounds())) {
+			if (h.getBounds().contains(e.getPoint())) {
 				h.mousePressed(e);
 			}
 		}
 	}
-
-	public void onMouseReleased(MouseEvent e) {
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
 		for (HElement h : elements) {
-			if (isWithin(e.getPoint(), h.getBounds())) {
+			if (h.getBounds().contains(e.getPoint())) {
+				h.mouseClicked(e);
+			}
+		}
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		for (HElement h : elements) {
+			if (h.getBounds().contains(e.getPoint())) {
 				h.mouseReleased(e);
 			}
 		}
 	}
-
+	
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		//TODO make this specific to HElements instead of just a notification on the whole HUD
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+		//TODO make this specific to HElements instead of just a notification on the whole HUD
+	}
+	
 	public void render(Screen s) {
 		for (HElement h : elements) {
 			h.update();
 			h.draw(s);
 		}
 	}
-
-	public void setView(View v) {
-		currentView = v;
-	}
-
+	
 	private void initialize(int width, int height) {
 		Player p = w.getCurrentLevel().getMainPlayer();
 

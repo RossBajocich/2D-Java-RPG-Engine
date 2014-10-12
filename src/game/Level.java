@@ -20,18 +20,15 @@ public class Level {
 	public enum RenderLayer {
 		DECORATION(0), MAIN(1);
 		RenderLayer(int x) {
-
 		}
 	}
+
 	private int width, height;
-
 	private String bg;
-
 	private EnumMap<RenderLayer, List<Member>> renders = new EnumMap<RenderLayer, List<Member>>(
 			RenderLayer.class);
 	private List<Member> elements = new ArrayList<Member>();
 	private List<Member> toRemove = new ArrayList<Member>();
-
 	private Player mainPlayer;
 
 	public Level() {

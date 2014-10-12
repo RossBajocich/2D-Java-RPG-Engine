@@ -6,7 +6,6 @@ import game.GameLoop;
 import javax.swing.JFrame;
 
 import utilities.Keyboard;
-import utilities.Mouse;
 
 @SuppressWarnings("serial")
 public class Window extends JFrame {
@@ -14,7 +13,7 @@ public class Window extends JFrame {
 	private static GameLoop gameLoop;
 	private static Game game;
 	private static Keyboard k;
-	private static Mouse m;
+	private static Window w;
 
 	public Window(String title, int width, int height) {
 		super(title);
@@ -27,17 +26,19 @@ public class Window extends JFrame {
 		setVisible(true);
 		setResizable(false);
 		rm = new RenderManager(this);
-		addMouseListener(m);
 	}
 
 	public static void main(String[] args) {
-		Window w = new Window("Game", 500, 500);
-		game = new Game(rm, m);
+		w = new Window("Game", 500, 500);
+		game = new Game(rm);
 		gameLoop = new GameLoop(game);
-		m = new Mouse(game);
 		while (true) {
 			gameLoop.run();
 			rm.run();
 		}
+	}
+
+	public static Window get() {
+		return w;
 	}
 }

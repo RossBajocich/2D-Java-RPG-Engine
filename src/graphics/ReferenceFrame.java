@@ -44,7 +44,7 @@ public class ReferenceFrame {
 					drawMember(window_x, window_y, window_width, window_height,
 							m, g);
 
-					if (m instanceof Player && !((Player) m).isMainPlayer()) {
+					if (m.getType().equalsIgnoreCase("player") && !((Player) m).isMainPlayer()) {
 						drawBars(window_x, window_y, window_width,
 								window_height, (Player) m, g);
 					}

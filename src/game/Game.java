@@ -8,13 +8,12 @@ import java.awt.event.KeyEvent;
 import loaders.LevelLoader;
 import utilities.Clock;
 import utilities.Keyboard;
-import utilities.Mouse;
 
 public class Game {
 	public enum GameState {
 		RUNNING, PAUSED
 	}
-	private Mouse m;
+
 	private HUD hud;
 	private World w;
 	private Menu menu;
@@ -22,9 +21,7 @@ public class Game {
 
 	private RenderLoop render_loop;
 
-	public Game(RenderManager rm, Mouse m) {
-		this.m = m;
-
+	public Game(RenderManager rm) {
 		Level l = LevelLoader.getLevel("level0");
 		w = new World(l);
 
