@@ -1,5 +1,6 @@
 package game;
 
+import graphics.RenderLoop;
 import gui.RenderManager;
 import gui.HUD.HUD;
 
@@ -8,6 +9,7 @@ import java.awt.event.KeyEvent;
 import loaders.LevelLoader;
 import utilities.Clock;
 import utilities.Keyboard;
+import world.World;
 
 public class Game {
 	public enum GameState {
@@ -15,15 +17,17 @@ public class Game {
 	}
 
 	private HUD hud;
-	private World w;
+	private static World w = new World();
 	private Menu menu;
 	private GameState state;
 
 	private RenderLoop render_loop;
 
 	public Game(RenderManager rm) {
-		Level l = LevelLoader.getLevel("level0");
-		w = new World(l);
+		if (w.getCurrentLevel() == null) {
+			// should load the files in a different thread for loading screen
+			load();
+		}
 
 		hud = new HUD(w, rm.getMain().getWidth(), rm.getMain().getHeight());
 
@@ -32,6 +36,10 @@ public class Game {
 		state = GameState.RUNNING;
 
 		render_loop = new RenderLoop(rm, w, hud);
+	}
+
+	public static void load() {
+		w.setLevel(LevelLoader.getLevel("level0"));
 	}
 
 	public HUD getHUD() {

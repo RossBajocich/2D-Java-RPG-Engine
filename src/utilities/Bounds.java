@@ -1,4 +1,4 @@
-package loaders;
+package utilities;
 
 import java.awt.Rectangle;
 

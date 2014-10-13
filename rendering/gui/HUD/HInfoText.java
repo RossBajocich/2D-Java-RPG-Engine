@@ -1,7 +1,5 @@
 package gui.HUD;
 
-import gui.Screen;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -23,10 +21,8 @@ public class HInfoText extends HElement {
 	}
 
 	@Override
-	public void draw(Screen s) {
+	public void draw(Graphics g) {
 		int h = 18;
-
-		Graphics g = s.getGraphics();
 
 		g.drawImage(image, x, y, width, height, null);
 

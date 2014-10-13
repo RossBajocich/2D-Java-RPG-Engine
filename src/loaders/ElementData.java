@@ -1,6 +1,6 @@
 package loaders;
 
-import game.Level;
+import world.Level;
 
 public class ElementData {
 	public boolean mainPlayer = false;

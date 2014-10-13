@@ -4,6 +4,7 @@ import items.Container;
 import items.Item;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import characters.Player;
 
@@ -20,11 +21,11 @@ import elements.Prop;
 
 public class TypeMaker {
 
-	static HashMap<Integer, Container> containers = new HashMap<Integer, Container>();
-	static HashMap<Integer, Decoration> decorations = new HashMap<Integer, Decoration>();
-	static HashMap<Integer, Item> items = new HashMap<Integer, Item>();
-	static HashMap<Integer, Player> players = new HashMap<Integer, Player>();
-	static HashMap<Integer, Prop> props = new HashMap<Integer, Prop>();
+	static Map<Integer, Container> containers = new HashMap<Integer, Container>();
+	static Map<Integer, Decoration> decorations = new HashMap<Integer, Decoration>();
+	static Map<Integer, Item> items = new HashMap<Integer, Item>();
+	static Map<Integer, Player> players = new HashMap<Integer, Player>();
+	static Map<Integer, Prop> props = new HashMap<Integer, Prop>();
 
 	public static void addContainer(final int id, final Container c) {
 		containers.put(id, c);

@@ -1,8 +1,5 @@
 package graphics;
 
-import elements.Member;
-import game.Level;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,17 +7,20 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.List;
 
+import world.Level;
 import characters.Player;
 
 import components.AttackComponent;
 import components.GraphicsComponent;
 import components.PhysicsComponent;
 
+import elements.Member;
+
 public class ReferenceFrame {
 
 	protected int x, y, width, height;
 	protected Level current_level;
-	boolean drawBounds = true;
+	protected boolean drawBounds = false, bars = true;
 
 	public ReferenceFrame(int x, int y, int width, int height,
 			Level current_level) {
@@ -36,7 +36,8 @@ public class ReferenceFrame {
 
 		g.drawImage(
 				level.getBackground().getSubimage(this.x, this.y, this.width,
-						this.height), 0, 0, window_width, window_height, null);
+						this.height), window_x, window_y, window_width,
+				window_height, null);
 
 		for (List<Member> l : level.getRenders().values()) {
 			for (Member m : l) {
@@ -44,7 +45,8 @@ public class ReferenceFrame {
 					drawMember(window_x, window_y, window_width, window_height,
 							m, g);
 
-					if (m.getType().equalsIgnoreCase("player") && !((Player) m).isMainPlayer()) {
+					if (m.getType().equalsIgnoreCase("player")
+							&& !((Player) m).isMainPlayer() && bars) {
 						drawBars(window_x, window_y, window_width,
 								window_height, (Player) m, g);
 					}
@@ -69,6 +71,14 @@ public class ReferenceFrame {
 		return y;
 	}
 
+	public void setDrawBars(boolean bars) {
+		this.bars = bars;
+	}
+
+	public void setDrawBounds(boolean drawBounds) {
+		this.drawBounds = drawBounds;
+	}
+
 	private void drawBars(int window_x, int window_y, int window_width,
 			int window_height, Player p, Graphics gMain) {
 		PhysicsComponent physics = p.get(PhysicsComponent.class);
@@ -80,21 +90,20 @@ public class ReferenceFrame {
 
 		gMain.setColor(Color.red);
 		gMain.fillRect((x1 * window_width) / this.width, (y1 * window_height)
-				/ this.height, (int) (barW * window_width) / this.width,
-				(int) (barH * window_height) / this.height);
+				/ this.height, barW * window_width / this.width, barH
+				* window_height / this.height);
 
 		gMain.setColor(Color.green);
-		double temp = ((((double) (p.get(AttackComponent.class)).getHealth() / (p
+		double temp = ((((p.get(AttackComponent.class)).getHealth() / (p
 				.get(AttackComponent.class)).getMaxHealth()) * barW) * window_width)
 				/ this.width;
 		gMain.fillRect((x1 * window_width) / this.width, (y1 * window_height)
-				/ this.height, (int) temp, (int) (barH * window_height)
-				/ this.height);
+				/ this.height, (int) temp, barH * window_height / this.height);
 
 		gMain.setColor(Color.black);
 		gMain.drawRect((x1 * window_width) / this.width, (y1 * window_height)
-				/ this.height, (int) (barW * window_width) / this.width,
-				(int) (barH * window_height) / this.height);
+				/ this.height, barW * window_width / this.width, barH
+				* window_height / this.height);
 
 		gMain.drawString("hp: " + (p.get(AttackComponent.class)).getHealth()
 				+ " / " + (p.get(AttackComponent.class)).getMaxHealth(),
@@ -106,7 +115,7 @@ public class ReferenceFrame {
 
 		gMain.setColor(Color.white);
 		gMain.fillRect((x1 * window_width) / this.width, (y1 * window_height)
-				/ this.height, (int) barW, barH);
+				/ this.height, barW, barH);
 
 		gMain.setColor(Color.blue);
 		temp = (((p.get(AttackComponent.class)).getWaitRatio() * barW) * window_width)
@@ -121,25 +130,24 @@ public class ReferenceFrame {
 		PhysicsComponent physics = e.get(PhysicsComponent.class);
 		GraphicsComponent graphics = e.get(GraphicsComponent.class);
 
-		int x = (int) (physics.getX() - this.x) + window_x;
-		int y = (int) (physics.getY() - this.y) + window_y;
+		int x = (int) (physics.getX() - this.x);
+		int y = (int) (physics.getY() - this.y);
 
 		if (graphics.getImage() != null) {
-			gMain.drawImage(graphics.getImage(), (x * window_width)
-					/ this.width, (y * window_height) / this.height,
-					(int) (graphics.getWidth() * window_width) / this.width,
-					(int) (graphics.getHeight() * window_height) / this.height,
-					null);
+			gMain.drawImage(graphics.getImage(), window_x + (x * window_width)
+					/ this.width, window_y + (y * window_height) / this.height,
+					graphics.getWidth() * window_width / this.width,
+					graphics.getHeight() * window_height / this.height, null);
 			if (drawBounds) {
 				// debug
 				gMain.setColor(Color.red);
 				((Graphics2D) gMain).setStroke(new BasicStroke(2));
 				Rectangle r = (e.get(PhysicsComponent.class)).getBoundsRect();
-				gMain.drawRect((int) ((r.x - this.x) * window_width)
-						/ this.width, (int) ((r.y - this.y) * window_height)
-						/ this.height, (int) (r.width * window_width)
-						/ this.width, (int) (r.height * window_height)
-						/ this.height);
+				gMain.drawRect(window_x + ((r.x - this.x) * window_width)
+						/ this.width, window_y
+						+ ((r.y - this.y) * window_height) / this.height,
+						r.width * window_width / this.width, r.height
+								* window_height / this.height);
 			}
 		}
 	}

@@ -1,9 +1,10 @@
-package game;
+package graphics;
 
-import elements.Member;
-import graphics.ReferenceFrame;
+import world.Level;
 
 import components.PhysicsComponent;
+
+import elements.Member;
 
 public class View extends ReferenceFrame {
 
@@ -24,19 +25,23 @@ public class View extends ReferenceFrame {
 		follow = p;
 	}
 
+	@Override
 	public int getHeight() {
 		return height;
 	}
 
+	@Override
 	public int getWidth() {
 		return width;
 	}
 
+	@Override
 	public int getX() {
 		update();
 		return x;
 	}
 
+	@Override
 	public int getY() {
 		update();
 		return y;
@@ -50,11 +55,11 @@ public class View extends ReferenceFrame {
 
 		if ((centerX - (width / 2) >= 0)
 				&& (centerX + (width / 2) < current_level.getWidth())) {
-			x = (int) (centerX - (width / 2));
+			x = centerX - (width / 2);
 		}
 		if ((centerY - (height / 2) >= 0)
 				&& (centerY + (height / 2) < current_level.getHeight())) {
-			y = (int) (centerY - (height / 2));
+			y = centerY - (height / 2);
 		}
 	}
 }

@@ -22,8 +22,7 @@ public class Item extends Member {
 	@Override
 	public Member clone() {
 		Item i = new Item(this.get(PhysicsComponent.class),
-				this.get(GraphicsComponent.class),
-				(ItemInteract) this.get(ItemInteract.class));
+				this.get(GraphicsComponent.class), this.get(ItemInteract.class));
 		i.stats = stats;
 		i.name = name;
 		i.type = type;

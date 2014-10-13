@@ -1,18 +1,18 @@
 package gui.HUD;
 
-import game.World;
-import gui.Screen;
 import gui.Window;
 
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import loaders.ResourceLoader;
+import world.World;
 import characters.Player;
 
-public class HUD implements MouseListener{
+public class HUD implements MouseListener {
 	private World w;
 	private List<HElement> elements = new ArrayList<HElement>();
 
@@ -29,16 +29,7 @@ public class HUD implements MouseListener{
 	public List<HElement> getElements() {
 		return elements;
 	}
-	
-	@Override
-	public void mousePressed(MouseEvent e) {
-		for (HElement h : elements) {
-			if (h.getBounds().contains(e.getPoint())) {
-				h.mousePressed(e);
-			}
-		}
-	}
-	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		for (HElement h : elements) {
@@ -47,7 +38,28 @@ public class HUD implements MouseListener{
 			}
 		}
 	}
-	
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO make this specific to HElements instead of just a notification
+		// on the whole HUD
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO make this specific to HElements instead of just a notification
+		// on the whole HUD
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		for (HElement h : elements) {
+			if (h.getBounds().contains(e.getPoint())) {
+				h.mousePressed(e);
+			}
+		}
+	}
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		for (HElement h : elements) {
@@ -56,24 +68,14 @@ public class HUD implements MouseListener{
 			}
 		}
 	}
-	
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		//TODO make this specific to HElements instead of just a notification on the whole HUD
-	}
-	
-	@Override
-	public void mouseExited(MouseEvent e) {
-		//TODO make this specific to HElements instead of just a notification on the whole HUD
-	}
-	
-	public void render(Screen s) {
+
+	public void render(Graphics g) {
 		for (HElement h : elements) {
 			h.update();
-			h.draw(s);
+			h.draw(g);
 		}
 	}
-	
+
 	private void initialize(int width, int height) {
 		Player p = w.getCurrentLevel().getMainPlayer();
 

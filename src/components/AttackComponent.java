@@ -139,7 +139,7 @@ public class AttackComponent extends Component {
 				if (((Player) modify).getContainer() != null) {
 					((Player) modify).getContainer().dropItems();
 				}
-				((Member) modify).getLevel().removeMember(modify);
+				modify.getLevel().removeMember(modify);
 			}
 
 			@Override

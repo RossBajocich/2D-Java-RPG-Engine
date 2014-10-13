@@ -1,13 +1,12 @@
 package components;
 
-import elements.Member;
-import game.Level;
-import game.Position;
-
 import java.awt.Rectangle;
 
-import loaders.Bounds;
+import utilities.Bounds;
+import world.Level;
 import characters.Player;
+import elements.Member;
+import game.Position;
 
 public class PhysicsComponent extends Component {
 

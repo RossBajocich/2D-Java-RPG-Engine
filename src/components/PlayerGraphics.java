@@ -8,6 +8,7 @@ public class PlayerGraphics extends GraphicsComponent {
 		super();
 	}
 
+	@Override
 	public void update() {
 		if ((modify.get(PhysicsComponent.class)).getDirection() != Direction.DOWN) {
 			switch ((modify.get(PhysicsComponent.class)).getDirection()) {

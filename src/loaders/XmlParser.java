@@ -17,6 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import utilities.Bounds;
 import utilities.Console;
 import utilities.Console.in;
 import utilities.Stats;

@@ -1,9 +1,10 @@
-package utilities;
+package graphics;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import loaders.ResourceLoader;
+import utilities.Console;
 import utilities.Console.in;
 
 public class Images {

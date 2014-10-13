@@ -28,17 +28,18 @@ public class Window extends JFrame {
 		rm = new RenderManager(this);
 	}
 
+	public static Window get() {
+		return w;
+	}
+
 	public static void main(String[] args) {
 		w = new Window("Game", 500, 500);
+		Game.load();
 		game = new Game(rm);
 		gameLoop = new GameLoop(game);
 		while (true) {
 			gameLoop.run();
 			rm.run();
 		}
-	}
-
-	public static Window get() {
-		return w;
 	}
 }

@@ -38,6 +38,7 @@ public class Keyboard implements KeyListener {
 		return pressed;
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() >= 0 && e.getKeyCode() < keys.length) {
 			keys[e.getKeyCode()] = true;
@@ -47,6 +48,7 @@ public class Keyboard implements KeyListener {
 		keys[KeyEvent.VK_CONTROL] = e.isControlDown();
 	}
 
+	@Override
 	public void keyReleased(KeyEvent e) {
 		if (e.getKeyCode() >= 0 && e.getKeyCode() < keys.length) {
 			keys[e.getKeyCode()] = false;
@@ -57,6 +59,7 @@ public class Keyboard implements KeyListener {
 
 	}
 
+	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 

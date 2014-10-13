@@ -32,9 +32,10 @@ public class NPCInput extends InputComponent {
 		Console.log("Player " + p.getName() + " is now being chased", in.INFO);
 	}
 
+	@Override
 	public void setModify(Member m) {
 		if (m instanceof Player) {
-			this.modify = (Player) m;
+			this.modify = m;
 		} else {
 			Console.log("Cannot have non player modifier for NPCInput!",
 					Console.in.ERROR);

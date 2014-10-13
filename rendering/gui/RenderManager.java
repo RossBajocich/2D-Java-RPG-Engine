@@ -10,6 +10,7 @@ public class RenderManager implements Runnable {
 	public enum ScreenLayer {
 		MAIN, HUD
 	}
+
 	private JFrame parent;
 	private VolatileScreen main;
 
@@ -42,6 +43,7 @@ public class RenderManager implements Runnable {
 		}
 	}
 
+	@Override
 	public void run() {
 		for (Screen s : screens.values()) {
 			if (parent != null && s.getImage() != null) {

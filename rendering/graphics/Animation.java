@@ -1,13 +1,13 @@
 package graphics;
 
+import graphics.Images.EXT;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import utilities.Console;
 import utilities.Console.in;
-import utilities.Images;
-import utilities.Images.EXT;
 
 public class Animation {
 	List<String> images = new ArrayList<String>();

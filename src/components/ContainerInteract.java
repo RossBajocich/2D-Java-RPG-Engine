@@ -12,6 +12,7 @@ public class ContainerInteract extends InteractComponent {
 		super();
 	}
 
+	@Override
 	public void onInteract(Member sender) {
 		// TODO: add gui to popup with items inside if is a "treasure chest" or
 		// if it is a "backpack"

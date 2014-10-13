@@ -15,6 +15,7 @@ public class VolatileScreen extends Screen {
 		img = manager.getWindow().createVolatileImage(width, height);
 	}
 
+	@Override
 	public VolatileImage getImage() {
 		return (VolatileImage) img;
 	}

@@ -1,12 +1,12 @@
 package elements;
 
-import game.Level;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import world.Level;
 
 import components.Component;
 import components.GraphicsComponent;
@@ -28,6 +28,7 @@ public abstract class Member {
 		components.put(GraphicsComponent.class, graphics);
 	}
 
+	@Override
 	public abstract Member clone();
 
 	public void copy(Member m) {
@@ -48,11 +49,11 @@ public abstract class Member {
 			for (Entry<Class<? extends Component>, Component> c : components
 					.entrySet()) {
 				if (clazz.isAssignableFrom(c.getKey())) {
-					return (T) clazz.cast(c.getValue());
+					return clazz.cast(c.getValue());
 				}
 			}
 		}
-		return (T) clazz.cast(components.get(clazz));
+		return clazz.cast(components.get(clazz));
 	}
 
 	/*

@@ -1,8 +1,5 @@
 package loaders;
 
-import elements.Member;
-import game.Level;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +8,8 @@ import java.io.IOException;
 
 import utilities.Console;
 import utilities.Console.in;
+import world.Level;
+import elements.Member;
 
 public class LevelLoader {
 

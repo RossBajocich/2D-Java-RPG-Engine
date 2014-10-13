@@ -33,6 +33,7 @@ public class Player extends Member {
 		init();
 	}
 
+	@Override
 	public Member clone() {
 		// This is null because copy(Player p) copies all components through the
 		// super()
@@ -109,6 +110,7 @@ public class Player extends Member {
 		this.stats = stats;
 	}
 
+	@Override
 	public void update() {
 		if (container != null) {
 			container.get(PhysicsComponent.class).setX(

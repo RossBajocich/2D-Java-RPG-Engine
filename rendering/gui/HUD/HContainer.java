@@ -1,11 +1,11 @@
 package gui.HUD;
 
-import gui.Screen;
 import items.Container;
 import items.Item;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -31,10 +31,9 @@ public class HContainer extends HElement {
 	}
 
 	@Override
-	public void draw(Screen s) {
-		s.getGraphics().drawImage(image, x, y, width, height, null);
+	public void draw(Graphics g) {
+		g.drawImage(image, x, y, width, height, null);
 
-		Graphics2D g = s.getGraphics();
 		int zx = 0, zy = 0;
 		if (b != null) {
 			for (Item i : b.getItems()) {
@@ -49,8 +48,24 @@ public class HContainer extends HElement {
 			}
 		}
 		g.setColor(Color.black);
-		g.setStroke(new BasicStroke(2));
+		((Graphics2D) g).setStroke(new BasicStroke(2));
 		g.drawRect(x, y, width, height);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		drop(e.getPoint());
+		Console.log("Mouse clicked on the BACKPACK", in.INFO);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		drop(e.getPoint());
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
 	}
 
 	@Override
@@ -79,18 +94,5 @@ public class HContainer extends HElement {
 				px++;
 			}
 		}
-	}
-
-	public void mouseClicked(MouseEvent e) {
-		drop(e.getPoint());
-		Console.log("Mouse clicked on the BACKPACK", in.INFO);
-	}
-
-	public void mousePressed(MouseEvent e) {
-		drop(e.getPoint());
-	}
-
-	public void mouseReleased(MouseEvent e) {
-
 	}
 }

@@ -1,6 +1,7 @@
 package loaders;
 
 import graphics.Animation;
+import graphics.Images;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -9,7 +10,6 @@ import javax.imageio.ImageIO;
 
 import utilities.Console;
 import utilities.Console.in;
-import utilities.Images;
 
 public class ResourceLoader {
 

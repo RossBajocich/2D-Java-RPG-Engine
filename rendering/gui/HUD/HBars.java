@@ -1,7 +1,5 @@
 package gui.HUD;
 
-import gui.Screen;
-
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -21,8 +19,7 @@ public class HBars extends HElement {
 	}
 
 	@Override
-	public void draw(Screen s) {
-		Graphics gMain = s.getGraphics();
+	public void draw(Graphics gMain) {
 		if (p != null) {
 			int barW = width, barH = height / 3;
 

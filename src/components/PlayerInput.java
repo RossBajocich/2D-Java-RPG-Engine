@@ -15,6 +15,7 @@ public class PlayerInput extends InputComponent {
 		super();
 	}
 
+	@Override
 	public void setModify(Member m) {
 		this.modify = m;
 		if (!(m instanceof Player)) {

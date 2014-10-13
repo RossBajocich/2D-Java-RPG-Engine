@@ -1,4 +1,4 @@
-package game;
+package world;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -8,13 +8,13 @@ import java.util.TreeMap;
 
 import utilities.Console;
 import utilities.Console.in;
-import utilities.Images;
 import characters.Player;
 
 import components.GraphicsComponent;
 import components.PhysicsComponent;
 
 import elements.Member;
+import graphics.Images;
 
 public class Level {
 	public enum RenderLayer {
