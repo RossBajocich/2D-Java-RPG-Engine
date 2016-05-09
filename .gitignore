@@ -44,8 +44,8 @@ Temporary Items
 
 bin/
 LevelEditor/
-.settings/
+#.settings/
 
-.project
-.classpath
+#.project
+%.classpath
 *.class
